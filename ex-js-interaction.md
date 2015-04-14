@@ -205,3 +205,59 @@ Nous pouvons également modifier le contenu d'un élément:
 Nous pouvons donc modifier l'ensemble du contenu de la page Web avec quelques manipulations relativement simples...
 
 
+---
+
+## 4. Événements
+
+Les événements sont un élément clé pour l'interactivité sur une page Web. En effet, ce sont les déclencheurs de nos actions, elles permettent de lancer un code Javascript. Le nombre d'événements possibles est grand, et nous allons regarder ici juste quelques-uns. Parmi les événements les plus fréquents, on trouve (avec les noms des événements entre parenthèses):
+
+- un clic de souris (`click`)
+- l'entrée de la souris dans un élément HTML (`mousenter`)
+- la sortie de la souris dans un élément HTML (`mouseout`)
+- le changement de statut d'un menu déroulant, d'une case à cocher, d'un bouton radio, etc. (`change`)
+- le changement du contenu d'un champ texte (`change`)
+- le clic sur un bouton (`click`)
+- le scroll (`scroll`)
+- le mouvement de la souris (`mousemove`)
+
+et aussi, d'un style un peu différent:
+
+- la fin de la chargement de la page HTML par le navigateur (`load`)
+- la fin de la construction du DOM par le navgiateur (`ready`)
+- le changement de la taille de la fenêtre (`resize`)
+
+Une action (fonction Javascript) peut être «attachée» à un de ces événements, à l'aide de la fonction jQuery `on` avec comme arguments le nom de l'événement et la fonction à exécuter. Regardons ce code comme exemple:
+
+    function ouf(){
+    	alert('ouf!');    }
+    $('.page-header').on('click', ouf);
+
+Ce code «attache» la fonction `ouf` à l'événement `click` du `div` contenant le titre de la page. Si on exécute ce code dans la console du projet [app-v1](https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1), et on clique par la suite sur le titre, la fonction `ouf` est exécutée à chaque fois.
+
+En plus, il est possible de retarder l'exécution d'une action, à l'aide de la fonction `setTimeout` qui prend la fonction à exécuter ainsi que le nombre de millisecondes à attendre:
+
+    function ouf(){
+        alert('ouf!');    }
+    function waitForOuf(){
+        setTimeout(ouf, 2000);    }
+    $('.page-header').on('click', waitForOuf);
+
+Ces deux mécanismes sont responsables pour l'interactivité dans beaucoup de situations. Il y a par exemple un événement `ready` qui est déclenché par la page Web (le `document`) une fois que le DOM est construit et qu'il est possible d'interagir correctement avec le DOM à l'aide de fonctions Javascript. Le code Javascript du projet [app-v1](https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1) dans [script.js](https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v1/script.js) utilise exactement ce mécanisme pour construire la carte sur la page. La carte est construite dans la fonction `buildMap`, qui est appelée depuis la fonction `main`. Cette fonction `main` quant à elle est exécutée automatiquement au moment ou la page Web est prête, ce qui est définie par l'instruction:
+
+    $(document).on('ready', main);
+
+La documentation jQuery contient la [liste de tous les événements](https://api.jquery.com/category/events/), avec une description.
+
+
+### Exemple: lancer le filtre des hôtels
+
+Pour montrer un court exemple d'un événement, nous illustrons ici comment le filtre des hôtels dans le projet [app-v1](https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1) peut être implémentée. A l'intérieur du [script.js](https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v1/script.js), dans la fonction `main`, nous pouvons attacher une fonction à l'événement ´click´ du bouton «Chercher»:
+
+    $('button').on('click', filtrerHotels);
+
+Ceci nécessite évidemment de disposer d'une fonction `filtrerHotels`, ce qui n'est pas encore notre cas. Il suffit de la rajouter dans le fichier [script.js](https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v1/script.js):
+
+    function filtrerHotels(){
+    	// suite du code ici..    }
+
+Par la suite, dans la fonction `filtrerHotels`, il faut récupérer les valeurs des différents champs (région, catégorie, prix minimum et maximum). Là aussi, jQuery est d'une grande utilité.

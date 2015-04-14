@@ -137,6 +137,46 @@ $(&#39;button&#39;).addClass(&#39;btn-primary&#39;);</code></pre>
 <pre><code>colonneDuMilieu = $(&#39;.col-sm-4&#39;);
 colonneDuMilieu.html(&#39;&lt;h1&gt;Hôtels&lt;/h1&gt;&lt;p&gt;Liste de tous les hôtels...&lt;/p&gt;&#39;);</code></pre>
 <p>Nous pouvons donc modifier l'ensemble du contenu de la page Web avec quelques manipulations relativement simples...</p>
+<hr />
+<h2 id="événements">4. Événements</h2>
+<p>Les événements sont un élément clé pour l'interactivité sur une page Web. En effet, ce sont les déclencheurs de nos actions, elles permettent de lancer un code Javascript. Le nombre d'événements possibles est grand, et nous allons regarder ici juste quelques-uns. Parmi les événements les plus fréquents, on trouve (avec les noms des événements entre parenthèses):</p>
+<ul>
+<li>un clic de souris (<code>click</code>)</li>
+<li>l'entrée de la souris dans un élément HTML (<code>mousenter</code>)</li>
+<li>la sortie de la souris dans un élément HTML (<code>mouseout</code>)</li>
+<li>le changement de statut d'un menu déroulant, d'une case à cocher, d'un bouton radio, etc. (<code>change</code>)</li>
+<li>le changement du contenu d'un champ texte (<code>change</code>)</li>
+<li>le clic sur un bouton (<code>click</code>)</li>
+<li>le scroll (<code>scroll</code>)</li>
+<li>le mouvement de la souris (<code>mousemove</code>)</li>
+</ul>
+<p>et aussi, d'un style un peu différent:</p>
+<ul>
+<li>la fin de la chargement de la page HTML par le navigateur (<code>load</code>)</li>
+<li>la fin de la construction du DOM par le navgiateur (<code>ready</code>)</li>
+<li>le changement de la taille de la fenêtre (<code>resize</code>)</li>
+</ul>
+<p>Une action (fonction Javascript) peut être «attachée» à un de ces événements, à l'aide de la fonction jQuery <code>on</code> avec comme arguments le nom de l'événement et la fonction à exécuter. Regardons ce code comme exemple:</p>
+<pre><code>function ouf(){
+    alert(&#39;ouf!&#39;);    }
+$(&#39;.page-header&#39;).on(&#39;click&#39;, ouf);</code></pre>
+<p>Ce code «attache» la fonction <code>ouf</code> à l'événement <code>click</code> du <code>div</code> contenant le titre de la page. Si on exécute ce code dans la console du projet <a href="https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1">app-v1</a>, et on clique par la suite sur le titre, la fonction <code>ouf</code> est exécutée à chaque fois.</p>
+<p>En plus, il est possible de retarder l'exécution d'une action, à l'aide de la fonction <code>setTimeout</code> qui prend la fonction à exécuter ainsi que le nombre de millisecondes à attendre:</p>
+<pre><code>function ouf(){
+    alert(&#39;ouf!&#39;);    }
+function waitForOuf(){
+    setTimeout(ouf, 2000);    }
+$(&#39;.page-header&#39;).on(&#39;click&#39;, waitForOuf);</code></pre>
+<p>Ces deux mécanismes sont responsables pour l'interactivité dans beaucoup de situations. Il y a par exemple un événement <code>ready</code> qui est déclenché par la page Web (le <code>document</code>) une fois que le DOM est construit et qu'il est possible d'interagir correctement avec le DOM à l'aide de fonctions Javascript. Le code Javascript du projet <a href="https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1">app-v1</a> dans <a href="https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v1/script.js">script.js</a> utilise exactement ce mécanisme pour construire la carte sur la page. La carte est construite dans la fonction <code>buildMap</code>, qui est appelée depuis la fonction <code>main</code>. Cette fonction <code>main</code> quant à elle est exécutée automatiquement au moment ou la page Web est prête, ce qui est définie par l'instruction:</p>
+<pre><code>$(document).on(&#39;ready&#39;, main);</code></pre>
+<p>La documentation jQuery contient la <a href="https://api.jquery.com/category/events/">liste de tous les événements</a>, avec une description.</p>
+<h3 id="exemple-lancer-le-filtre-des-hôtels">Exemple: lancer le filtre des hôtels</h3>
+<p>Pour montrer un court exemple d'un événement, nous illustrons ici comment le filtre des hôtels dans le projet <a href="https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1">app-v1</a> peut être implémentée. A l'intérieur du <a href="https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v1/script.js">script.js</a>, dans la fonction <code>main</code>, nous pouvons attacher une fonction à l'événement ´click´ du bouton «Chercher»:</p>
+<pre><code>$(&#39;button&#39;).on(&#39;click&#39;, filtrerHotels);</code></pre>
+<p>Ceci nécessite évidemment de disposer d'une fonction <code>filtrerHotels</code>, ce qui n'est pas encore notre cas. Il suffit de la rajouter dans le fichier <a href="https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v1/script.js">script.js</a>:</p>
+<pre><code>function filtrerHotels(){
+    // suite du code ici..    }</code></pre>
+<p>Par la suite, dans la fonction <code>filtrerHotels</code>, il faut récupérer les valeurs des différents champs (région, catégorie, prix minimum et maximum). Là aussi, jQuery est d'une grande utilité.</p>
 
 
     </div>
