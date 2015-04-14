@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Géovisualisation dynamique et traitement de données</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+
+<h1 id="exercice-interaction-avec-javascript">Exercice: Interaction avec Javascript</h1>
+<p>L'objectif de cet exercice est de nous familiariser avec les possibilités d'interaction dans une application de Webmapping, à travers l'utilisation de Javascript.</p>
+<p>Dans le cadre de l'exercice, nous allons construire une petite application interactive pour trouver des hôtels de rêve, dont voici un brouillon de l'interface:</p>
+<div class="figure">
+<img src="figures/maquette.png" alt="Maquette de l&#39;application interactive" /><p class="caption">Maquette de l'application interactive</p>
+</div>
+<p>L'application contient un titre sur la largeur de la page. Dessous, nous trouvons une mise en page en <strong>3 colonnes</strong>:</p>
+<ol style="list-style-type: decimal">
+<li><p>la colonne de gauche contient les <strong>options de recherche et filtres</strong>. On peut notamment appliquer des filtres par région, catégorie, et prix.</p></li>
+<li><p>la colonne du milieu contient la <strong>liste des hôtels</strong> correspondant à nos filtres.</p></li>
+<li><p>la colonne de droite contient <strong>en haut une carte</strong> avec la localisation des hôtels, et <strong>en bas les détails de l'hôtel sélectionné</strong>.</p></li>
+</ol>
+<h2 id="architecture-de-base">Architecture de base</h2>
+<p>L'application est construite à l'aide des libraires <a href="http://getbootstrap.com/">Bootstrap</a>, <a href="http://jquery.com/">jQuery</a> et <a href="http://leafletjs.com/">Leaflet</a>.</p>
+<p>Le dossier <a href="https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1">app-v1</a> contient une première ébauche de l'application. Le fichier <a href="https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v1/index.html">index.html</a> contient la structure, tandis que l'ensemble du code Javascript a été placé dans le fichier <a href="https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v1/script.js">script.js</a>.</p>
+<p>Au niveau des filtres, pour des fins d'illustration, nous avons un menu déroulant, des cases à cocher, des boîtes de texte (ou plutôt des «boîtes de chiffres») ainsi qu'un bouton pour déclencher les filtres. Voici les détails de ces différents éléments:</p>
+<h3 id="a.-menu-déroulant">a. Menu déroulant</h3>
+<p>Le menu déroulant est appelé un <code>select</code> en HTML, et on donne l'ensemble des options possible dans le code HTML. Voici un exemple de menu en HTML:</p>
+<pre><code>&lt;select id=&quot;region&quot;&gt;
+    &lt;option value=&quot;&quot;&gt;Aucune région choisie&lt;/option&gt;
+    &lt;option value=&quot;FR&quot;&gt;Fribourg&lt;/option&gt;
+    &lt;option value=&quot;GE&quot; selected&gt;Genève&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+<p>Le menu déroulant commence avec <code>&lt;select&gt;</code> et se termine avec <code>&lt;/select&gt;</code>. Entre deux, il y a toutes les options possibles entre des balises <code>&lt;option&gt;</code> et <code>&lt;/option&gt;</code>. L'attribut <code>value</code> associe une valeur à chaque option, valeur qui est utilisée uniquement «en interne», à l'intérieur du code; elle n'est pas visible pour l'utilisateur de l'application. Le texte entre les deux balises est quant à lui visible pour l'utilisateur, mais ne joue pas vraiment un rôle à l'intérieur du code. L'attribut <code>id</code> dans la balise <code>&lt;select&gt;</code> donne un identifiant au menu qui doit être unique à travers l'ensemble du code HTML. L'attribut ´selected´ à l'intérieur de l'option «Genève» définit l'élément sélectionné au départ.</p>
+<p>Voici le rendu du code ci-dessus: <select id="region"> <option value="">Aucune région choisie</option> <option value="FR">Fribourg</option> <option value="GE" selected>Genève</option> </select></p>
+<h3 id="b.-boutons-radio">b. Boutons radio</h3>
+<p>Les boutons radio sont une alternative au menu déroulant si le nombre d'options est limité. Tout comme pour le menu déroulant, il y a une seule option sélectionné. Voici l'exemple de menu déroulant présenté ci-dessus sous forme de boutons radios:</p>
+<p>
+<input type="radio" name="region" value=""> Aucune région choisie<br> <input type="radio" name="region" value="FR"> Fribourg<br> <input type="radio" name="region" value="GE" checked> Genève<br>
+</p>
+
+<p>Les boutons radio prennent un peu plus de place, mais l'utilisateur voit sur un coup d'oeil l'ensemble des options. Si la place le permet et le nombre d'option ne dépasse pas 6-7 éléments, les boutons radio sont généralement à favoriser.</p>
+<p>Voici le code de l'exemple ci-dessus:</p>
+<pre><code>&lt;p&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;region&quot; value=&quot;&quot;&gt; Aucune région choisie&lt;br&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;region&quot; value=&quot;FR&quot;&gt; Fribourg&lt;br&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;region&quot; value=&quot;GE&quot; checked&gt; Genève&lt;br&gt;
+&lt;/p&gt;</code></pre>
+<p>Le fait que les trois ´input´ possèdent le même nom (´region´) définit que ce sont des boutons radio associés et qu'il ne puisse y avoir qu'une seule sélection.</p>
+<h3 id="c.-cases-à-cocher-et-labels">c. Cases à cocher (et labels)</h3>
+<p>Si plus d'une option peut être choisie à la fois, on utilise des cases à cocher («checkboxes») à la place des boutons radio:</p>
+<p>
+<input type="checkbox" value="VD" checked> Vaud<br> <input type="checkbox" value="FR"> Fribourg<br> <input type="checkbox" value="GE" checked> Genève<br>
+</p>
+
+<p>Et voici le code:</p>
+<pre><code>&lt;p&gt;
+    &lt;input type=&quot;checkbox&quot; value=&quot;VD&quot; checked&gt; Vaud&lt;br&gt;
+    &lt;input type=&quot;checkbox&quot; value=&quot;FR&quot;&gt; Fribourg&lt;br&gt;
+    &lt;input type=&quot;checkbox&quot; value=&quot;GE&quot; checked&gt; Genève&lt;br&gt;
+&lt;/p&gt;</code></pre>
+<p>La seule différence notable par rapport aux boutons radio est le changement du type.</p>
+<p>Le seul problème que nous avons avec ces exemples de boutons radio et cases à cocher, que bon nombre d'utilisateurs aimeraient bien cliquer sur le texte correspondant pour sélectionner une des options. Pour l'instant, dans notre code, cette association n'est pas faite, le texte de l'option et la case à cocher ou le bouton radio sont des éléments indépendants au niveau du code. Pour ce changer, nous devons avoir recours à des <strong><em>labels</em></strong>. Il y a deux variantes possibles:</p>
+<ol style="list-style-type: decimal">
+<li><p>La première option est en utilisant un identifiant unique qui est définit dans l'attribut <code>id</code> de la balise <code>input</code> et qui est répété dans l'attribut ´for` de la balise ´label´:</p>
+<pre><code>&lt;input id=&quot;vd&quot; type=&quot;checkbox&quot; value=&quot;VD&quot;&gt; &lt;label for=&quot;vd&quot;&gt;Vaud&lt;/label&gt;</code></pre>
+<p>ce qui donne (essayez de cliquer sur le nom plutôt que la case à cocher):<br /> <input id="vd" type="checkbox" value="VD"> <label for="vd">Vaud</label></p></li>
+<li><p>La deuxième option est d'insérer la balise <code>input</code> directement à l'intérieur de la balise <code>label</code>:</p>
+<pre><code>&lt;label&gt;&lt;input type=&quot;checkbox&quot; value=&quot;VD&quot;&gt; Vaud&lt;/label&gt;</code></pre>
+<p>ce qui donne à l'écran la même chose:<br /><label><input type="checkbox" value="VD"> Vaud</label></p></li>
+</ol>
+<h3 id="boîtes-de-texte">Boîtes de texte</h3>
+<p>Une boîte de texte est simplement un ´input´ de type texte:</p>
+<pre><code>&lt;input type=&quot;text&quot; value=&quot;contenu&quot;&gt;</code></pre>
+<p>ce qui donne:<br /><input type="text" value="contenu"></p>
+<p>ou avec un label:</p>
+<pre><code>&lt;label&gt;Prix maximum: &lt;input type=&quot;text&quot; value=&quot;0&quot;&gt;&lt;/label&gt;</code></pre>
+<p>ce qui donne:<br /><label>Prix maximum: <input type="text" value="0"></label></p>
+<p>Si le texte ne peut être qu'un chiffre, il est possible de changer le type en <code>number</code>:</p>
+<p><label>Prix maximum: <input type="number" value="0"></label></p>
+<p>ce qui donne:<br /><label>Prix maximum: <input type="number" value="0"></label></p>
+<h3 id="boutons">Boutons</h3>
+<p>Un bouton peut être simplement inséré avec:</p>
+<pre><code>&lt;button&gt;Cliquer ici&lt;/button&gt;</code></pre>
+ci qui donne:
+<button>
+Cliquer ici
+</button>
+
+<p>Il est à noter que le bouton n'exécute aucune action par défaut. L'action devra être définie dans le code Javascript.</p>
+
+
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+  </body>
+</html>
