@@ -260,4 +260,116 @@ Ceci nécessite évidemment de disposer d'une fonction `filtrerHotels`, ce qui n
     function filtrerHotels(){
     	// suite du code ici..    }
 
-Par la suite, dans la fonction `filtrerHotels`, il faut récupérer les valeurs des différents champs (région, catégorie, prix minimum et maximum). Là aussi, jQuery est d'une grande utilité.
+En insérant une instruction `console.log('filtrerHotels')` on peut vérifier si la fonction est bel et bien exécutée après un clic sur le bouton. Toujours utile de savoir si on a tout fait juste jusqu'à maintenant... `console.log` écrit le contenu donné dans la console Javascript, qui est invisible pour l'utilisateur moyen. On peut aussi y écrire des variables pour vérifier si elle contient une valeur attendue ou non. Très utile pour trouver les nombreuses erreurs.
+
+Par la suite, dans la fonction `filtrerHotels`, il faut récupérer les valeurs des différents champs (région, catégorie, prix minimum et maximum). Là aussi, jQuery est d'une grande utilité, surtout la fonction `val` qui permet de récupérer la valeur actuelle:
+
+    function filtrerHotels(){
+        var region = $('#region').val();
+        var minprix = parseInt($('#minprix').val());
+        var maxprix = parseInt($('#maxprix').val());
+        var cat_ville = $('#cat_ville')[0].checked;
+        var cat_rural = $('#cat_rural')[0].checked;
+        var cat_montagne = $('#cat_montagne')[0].checked;
+    
+        // contrôler le contenu des variables p.ex. comme ça:
+        console.log( [region, minprix, maxprix, cat_ville, cat_rural, cat_montagne] );
+        
+        // suite du filtre...
+    }
+
+La fonction `parseInt` permet de transformer une chaîne de caractères en nombre entier. La vérification si les cases à cocher sont cochées ou non est un peu différentes, mais nous renseigne simplement si une case à cocher précise est cochée (`true`) ou non (`false`). Par la suite, on peut afficher les hôtels correspondants à ces critères, et cacher les autres. Au moins, si on avait une liste d'hôtels... Cacher un élément n'est pas le problème:
+
+    $('.col-sm-4').addClass('hide');
+    
+... fait efficacement disparaître une des colonnes, et ...
+
+    $('.col-sm-4').removeClass('hide');
+
+... permet de la récupérer à nouveau. `hide` est par ailleurs une classe CSS qui est définie par Bootstrap.
+
+
+## 5. Récupérer des données JSON avec Javascript
+
+Nous allons récupérer les données sur les hôtels depuis un fichier externe qui est en format JSON. Ce fichier peut provenir ou non d'une base de données. Le format JSON permet d'enregistrer des données d'une manière qui est relativement facile à comprendre par l'humain et l'ordinateur, ce qui s'avère très pratique. Un fichier JSON est composé de dictionnaires, arrays, nombre entiers et décimales, et des chaînes de caractères, très similaire à ce que pourrait être un bout de code Javascript. Voici un exemple simple:
+
+    {
+        "nom": "Einstein",
+        "prénom": "Albert",
+        "naissance": 1879,
+        "deces": 1955,
+        "publications": [
+            {"title": "E=mc2", "year": 1905},
+            {"title": "Newton's apple", "year": 1906},
+            {"title": "Schroedinger's cat", "year": 1907}
+        ]
+    }
+
+Les espaces et retours à la ligne ne sont pas nécessaires, mais facilitent évidemment la lecture du fichier.
+
+Il est possible de représenter par exemple un fichier ESRI Shape sous forme de JSON; le nom du format est alors GeoJSON. Voici un exemple d'un tel fichier:
+
+	{
+		"type": "FeatureCollection",                                  
+		"features": [
+			{
+				"type": "Feature",
+				"properties": { "id": 1, "name": "Bern" }, 
+				"geometry": { "type": "Point", "coordinates": [ 7.45, 46.96 ] }
+			}, { 
+				"type": "Feature", 
+				"properties": { "id": 2, "name": "Basel" }, 
+				"geometry": { "type": "Point", "coordinates": [ 7.60, 47.56 ] }
+			}, { 
+				"type": "Feature", 
+				"properties": { "id": 3, "name": "Lausanne" }, 
+				"geometry": { "type": "Point", "coordinates": [ 6.60, 46.53 ] }
+			}
+		]
+	}
+Un fichier GeoJSON peut être généré avec QGIS depuis un fichier Shape, ce qui est intéressant pour le lire par la suite dans notre application Web.
+
+Bien évidemment, il est possible de définir notre propre fichier JSON qui contient les informations nécessaires pour notre projet.
+
+La lecture d'un fichier JSON dans une application Web peut se faire facilement avec jQuery:
+
+    $.getJSON( url, callback_function );
+
+où `callback_function` est une fonction que nous avons défini auparavant et qui reçoit le contenu du fichier JSON. C'est à l'intérieur de cette fonction que nous pourrons faire utilisation de ces données. Un aspect important qui porte souvent à confusion est l'ordre d'exécution. Considérons par exemple le code suivant:
+
+
+    function insererDonneesJson(data) {
+        alert('1 - insérer les données du fichier JSON');
+    }
+    
+    $.getJSON('hotels.json', insererDonneesJson);
+    alert('2 - appel du fichier JSON terminé');
+
+La fonction `$.getJSON` demande un fichier JSON depuis le Web, et puis il est censé appeler avec le contenu la fonction `insererDonneesJson`. Cette fonction affiche simplement une boîte d'alerte. Et après la demande du fichier JSON, une autre boîte d'alerte est affichée à l'écran. Il peut être surprenant d'apprendre que généralement l'alerte '1 - insérer les données...' s'affiche après l'alerte '2 - appel du fichier ...'. Il est probablement encore plus surprenant d'apprendre qu'en fait, l'ordre d'exécution n'est simplement pas défini! Le problème vient du fait que **demander un fichier depuis le Web prend du temps**, beaucoup de temps à l'échelle de la vitesse d'exécution d'un programme informatique. Du coup, au lieu d'attendre une éternité informatique pour que le fichier arrive, l'ordinateur continue simplement à exécuter la suite du script. Ce qui est tout à fait ok vu que nous avons fourni une fonction qui sera exécuté automatiquement une fois que le fichier est arrivé, c'est-à-dire après une éternité...
+
+Avec ces connaissances, nous pouvons maintenant demander les données sur les hôtels à insérer, et les insérer dans la liste. Nous pouvons par exemple insérer la ligne
+
+    $.getJSON('hotels.json', insererDonneesJson);
+
+à la fin de la fonction `main`, et insérer la fonction `insererDonnesJson` un peu plus bas:
+
+    function insererDonneesJson(data){
+        console.log(data);
+    }
+
+Si on recharge maintenant notre application, on sera déçu car ça ne fonctionne généralement pas. Dans Google Chrome, nous aurons une erreur mystérieuse dans la console:
+
+<p style="margin: 0 20px; color: #f00;"><i>XMLHttpRequest cannot load file:///Users/.../hotels.json. Cross origin requests are only supported for protocol schemes: http, data, chrome, chrome-extension, https, chrome-extension-resource.</i></p>
+
+Le problème est que la fonction `$.getJSON` fonctionne uniquement à travers un serveur Web, et nous n'avons pour l'heure pas de serveur... Le plus simple est: faire tourner un serveur Web. Pour cela, il y a de nombreuses options. Sur Windows, on peut par exemple installer l'environnement [WAMP](http://www.wampserver.com/). Sur Linux et MacOS X, il suffit de suivre les étapes suivantes:
+
+1. ouvrir le Terminal
+2. `cd dossier/avec/fichiers/html/et/json`
+3. taper `python -m SimpleHTTPServer`
+4. se rendre à l'URL [http://127.0.0.1:8000](http://127.0.0.1:8000) ce qui est l'adresse de notre serveur Web que nous venons de démarrer à l'étape précédente
+
+Nous pouvons maintenant insérer les différents hôtels dans la liste. Pour cela, nous devons faire une boucle à travers l'ensemble des hôtels, et construire le code HTML que nous pouvons insérer dans le `div` prévu pour la liste. La fonction `insererDonneesJson` du [script.js](https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v2/script.js) du projet [app-v2](https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v2) contient le code qui permet de le faire.
+
+
+
+
