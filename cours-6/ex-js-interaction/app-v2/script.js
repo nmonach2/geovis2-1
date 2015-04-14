@@ -1,6 +1,7 @@
 
 // définition des variables globales
 var map = null;
+var hotels = null;
 
 
 // Fonction "main" est notre point d'entrée dans le script.
@@ -10,6 +11,7 @@ var map = null;
 function main(){
     buildMap();
     $('button').on('click', filtrerHotels);
+    $.getJSON('hotels.json', insererDonneesJson);
 }
 
 
@@ -35,6 +37,21 @@ function filtrerHotels(){
     // suite du filtre...
 }
 
+function insererDonneesJson(data){
+    hotels = data;  // garder les hotels en mémoire
+    var html = '';
+    for (var i=0; i < hotels.features.length; i++){
+        var h = hotels.features[i];
+        html += '<div id="hotel-div-'+h.properties.id+'">';
+        html +=     '<h3>'+h.properties.name+'</h3>';
+        html +=     '<p>Catégorie: '+h.properties.categorie+'</p>';
+        html +=     '<p>Prix: '+h.properties.prix+' CHF</p>';
+        html += '</div>';
+        html += '<hr>';
+    }
+    // insérer dans la liste
+    $('#hotels-liste').html(html);
+}
 
 // une fois que le document est prêt, on lance le script:
 $(document).on('ready', main);
