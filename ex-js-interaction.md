@@ -138,6 +138,11 @@ ci qui donne:
 Il est à noter que le bouton n'exécute aucune action par défaut. L'action devra être définie dans le code Javascript.
 
 
+### Style des éléments
+
+[Bootstrap](http://getbootstrap.com) définit toute une série de ***classes CSS*** pour donner une représentation familière aux différents éléments. Les filtres définies dans [app-v1](https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1) en font un usage extensif, d'où la présence de plusieurs éléments HTML (notamment des `div`, mais pas seulement) qui ne semblent à première vue pas nécessaires.
+
+
 ---
 
 ## 2. Le DOM: Document Object Model
@@ -153,12 +158,50 @@ Pour simplifier, on peut dire qu'**une interaction avec une page Web passe gén�
 
 ## 3. jQuery et le DOM
 
-La première tâche de jQuery est généralement de `sélectionner` à l'aide de code Javascript un élément particulier sur la page Web, afin d'effectuer une manipulation sur l'élément sélectionné. La sélection d'un élément se fait à l'aide de la fonction jQuery `$` (c'est le nom de la fonction, tout comme p.ex. `main`, `alert`, etc.), suivi de ce qu'on appelle un **identificateur** d'élément. jQuery nous retournera l'ensemble des éléments qui correspondent à l'identificateur donné. Nous pouvons sélectionner par exemple l'ensemble des balises `p` à l'aide du code suivant (le résultat est attribué à la variable `mes_paragraphes`):
+La première tâche de jQuery est généralement de `sélectionner` à l'aide de code Javascript un élément particulier sur la page Web, afin d'effectuer une manipulation sur l'élément sélectionné. La sélection d'un élément se fait à l'aide de la fonction jQuery `$` (c'est le nom de la fonction, tout comme p.ex. `main`, `alert`, etc.), suivi de ce qu'on appelle un **identificateur** d'élément. jQuery nous retournera l'ensemble des éléments qui correspondent à l'identificateur donné. Nous pouvons sélectionner par exemple l'ensemble des balises `input` à l'aide du code suivant (le résultat est attribué à la variable `mes_inputs`):
 
-    mes_paragraphes = $('p');
+    mes_inputs = $('input');
 
+La chaîne de caractère `'input'` est alors l'identificateur.  Il est possible d'exécuter ce code dans la console Javascript d'un navigateur Web pour tester l'expression:
 
----
+![Sélection de l'ensemble des balises input dans le navigateur](figures/browser-console.png)
 
-## 4. Événements
+Voici un aperçu de quelques identificateurs fréquents:
+
+- `$('input')` sélectionne toutes les balises `input`
+- `$('#region')` sélectionne tous les éléments dont l'attribut `id` contient la valeur `region` (notez que le dièse ne fait pas partie de l'ID, mais de l'identificateur jQuery)
+- `$('.form-group)` sélectionne tous les éléments dont l'attribut `class` contient la valeur `form-group`. L'attribut `class` contient la **classe CSS** d'un élément. Il est à noter qu'un élément peut avoir plusieurs classes CSS en même temps; elles sont alors séparées par des espaces (un nom de classe ne peut pas contenir d'espace).
+- `$('[name=region]')` sélectionne l'ensemble des éléments dont l'attribut `name` est égal à `region`.
+
+Une fois un ou plusieurs éléments sélectionnés, il est possible d'effectuer des manipulations diverses, interroger les valeurs des attributs, modifier le contenu etc. Ci-dessous quelques exemples.
+
+**Changement du style**: il est possible de modifier le style en utilisant la fonction `css`, p.ex.:
+
+    ds = $('.form-group');
+    ds.css('background-color', '#f00');
+
+attribue la valeur `#f00` à la propriété CSS `background-color`. Vous pouvez essayer l'exemple sur l'exemple [app-v1](https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1), dans la console Javascript. Le résultat n'est pas très beau... Pour revenir en arrière, il suffit de passer une valeur vide:
+
+    ds.css('background-color', '');
+
+ Il est possible d'ajouter ou d'enlever une class CSS:
+ 
+    $('button').removeClass('btn-success');
+    $('button').addClass('btn-primary');
+
+Ou encore, en une seule instruction:
+
+    $('.col-sm-3').addClass('col-sm-2').removeClass('col-sm-3')
+
+ce qui permet de redimensionner des colonnes à la volée...
+
+Cette méthode permet de modifier très facilement l'apparence d'un ou plusieurs éléments.
+
+Nous pouvons également modifier le contenu d'un élément:
+
+    colonneDuMilieu = $('.col-sm-4');
+    colonneDuMilieu.html('<h1>Hôtels</h1><p>Liste de tous les hôtels...</p>');
+
+Nous pouvons donc modifier l'ensemble du contenu de la page Web avec quelques manipulations relativement simples...
+
 

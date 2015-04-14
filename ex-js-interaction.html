@@ -27,7 +27,8 @@
 <li><p>la colonne du milieu contient la <strong>liste des hôtels</strong> correspondant à nos filtres.</p></li>
 <li><p>la colonne de droite contient <strong>en haut une carte</strong> avec la localisation des hôtels, et <strong>en bas les détails de l'hôtel sélectionné</strong>.</p></li>
 </ol>
-<h2 id="architecture-de-base">Architecture de base</h2>
+<hr />
+<h2 id="architecture-de-base">1. Architecture de base</h2>
 <p>L'application est construite à l'aide des libraires <a href="http://getbootstrap.com/">Bootstrap</a>, <a href="http://jquery.com/">jQuery</a> et <a href="http://leafletjs.com/">Leaflet</a>.</p>
 <p>Le dossier <a href="https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1">app-v1</a> contient une première ébauche de l'application. Le fichier <a href="https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v1/index.html">index.html</a> contient la structure, tandis que l'ensemble du code Javascript a été placé dans le fichier <a href="https://github.com/christiankaiser/geovis2/blob/master/cours-6/ex-js-interaction/app-v1/script.js">script.js</a>.</p>
 <p>Au niveau des filtres, pour des fins d'illustration, nous avons un menu déroulant, des cases à cocher, des boîtes de texte (ou plutôt des «boîtes de chiffres») ainsi qu'un bouton pour déclencher les filtres. Voici les détails de ces différents éléments:</p>
@@ -95,6 +96,47 @@ Cliquer ici
 </button>
 
 <p>Il est à noter que le bouton n'exécute aucune action par défaut. L'action devra être définie dans le code Javascript.</p>
+<h3 id="style-des-éléments">Style des éléments</h3>
+<p><a href="http://getbootstrap.com">Bootstrap</a> définit toute une série de <strong><em>classes CSS</em></strong> pour donner une représentation familière aux différents éléments. Les filtres définies dans <a href="https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1">app-v1</a> en font un usage extensif, d'où la présence de plusieurs éléments HTML (notamment des <code>div</code>, mais pas seulement) qui ne semblent à première vue pas nécessaires.</p>
+<hr />
+<h2 id="le-dom-document-object-model">2. Le DOM: Document Object Model</h2>
+<p>Un fichier HTML contient l'ensemble de la structure hiérarchique d'une page Web, y compris contenu et formatage. Le navigateur Web charge le fichier HTML dans sa mémoire et produit la représentation graphique de la page Web. Par la suite, l'utilisateur peut avoir la <strong>possibilité d'interagir avec la page Web</strong>, p.ex. à travers des menus déroulants, boutons, etc. Nous avons vu que l'option sélectionné d'un menu déroulant, ou le texte contenu dans une boîte de texte figure déjà dans le code HTML. Cependant, le navigateur Web ne va naturellement pas modifier le fichier HTML de départ. Le navigateur Web modifie uniquement la représentation interne du code HTML pour refléter les changements sur la page. Cette représentation interne du code HTML à l'intérieur du navigateur Web est appelé le <strong>Document Object Model</strong>, ou tout cour le <strong>DOM</strong>. Le DOM actuel d'une page Web peut être visualisé en mode développement du navigateur Web:</p>
+<div class="figure">
+<img src="figures/browser-dom.png" alt="Le DOM dans le navigateur (exemple avec Google Chrome)" /><p class="caption">Le DOM dans le navigateur (exemple avec Google Chrome)</p>
+</div>
+<p>Pour simplifier, on peut dire qu'<strong>une interaction avec une page Web passe généralement par une modification à la volée du DOM.</strong> Afin de rendre interactif notre page Web, nous devons donc étudier les possibilités de modifier le DOM à l'aide de code Javascript. La libraire <a href="http://jquery.com">jQuery</a> permet, entre autres, de modifier le DOM de manière relativement facile.</p>
+<hr />
+<h2 id="jquery-et-le-dom">3. jQuery et le DOM</h2>
+<p>La première tâche de jQuery est généralement de <code>sélectionner</code> à l'aide de code Javascript un élément particulier sur la page Web, afin d'effectuer une manipulation sur l'élément sélectionné. La sélection d'un élément se fait à l'aide de la fonction jQuery <code>$</code> (c'est le nom de la fonction, tout comme p.ex. <code>main</code>, <code>alert</code>, etc.), suivi de ce qu'on appelle un <strong>identificateur</strong> d'élément. jQuery nous retournera l'ensemble des éléments qui correspondent à l'identificateur donné. Nous pouvons sélectionner par exemple l'ensemble des balises <code>input</code> à l'aide du code suivant (le résultat est attribué à la variable <code>mes_inputs</code>):</p>
+<pre><code>mes_inputs = $(&#39;input&#39;);</code></pre>
+<p>La chaîne de caractère <code>'input'</code> est alors l'identificateur. Il est possible d'exécuter ce code dans la console Javascript d'un navigateur Web pour tester l'expression:</p>
+<div class="figure">
+<img src="figures/browser-console.png" alt="Sélection de l&#39;ensemble des balises input dans le navigateur" /><p class="caption">Sélection de l'ensemble des balises input dans le navigateur</p>
+</div>
+<p>Voici un aperçu de quelques identificateurs fréquents:</p>
+<ul>
+<li><code>$('input')</code> sélectionne toutes les balises <code>input</code></li>
+<li><code>$('#region')</code> sélectionne tous les éléments dont l'attribut <code>id</code> contient la valeur <code>region</code> (notez que le dièse ne fait pas partie de l'ID, mais de l'identificateur jQuery)</li>
+<li><code>$('.form-group)</code> sélectionne tous les éléments dont l'attribut <code>class</code> contient la valeur <code>form-group</code>. L'attribut <code>class</code> contient la <strong>classe CSS</strong> d'un élément. Il est à noter qu'un élément peut avoir plusieurs classes CSS en même temps; elles sont alors séparées par des espaces (un nom de classe ne peut pas contenir d'espace).</li>
+<li><code>$('[name=region]')</code> sélectionne l'ensemble des éléments dont l'attribut <code>name</code> est égal à <code>region</code>.</li>
+</ul>
+<p>Une fois un ou plusieurs éléments sélectionnés, il est possible d'effectuer des manipulations diverses, interroger les valeurs des attributs, modifier le contenu etc. Ci-dessous quelques exemples.</p>
+<p><strong>Changement du style</strong>: il est possible de modifier le style en utilisant la fonction <code>css</code>, p.ex.:</p>
+<pre><code>ds = $(&#39;.form-group&#39;);
+ds.css(&#39;background-color&#39;, &#39;#f00&#39;);</code></pre>
+<p>attribue la valeur <code>#f00</code> à la propriété CSS <code>background-color</code>. Vous pouvez essayer l'exemple sur l'exemple <a href="https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v1">app-v1</a>, dans la console Javascript. Le résultat n'est pas très beau... Pour revenir en arrière, il suffit de passer une valeur vide:</p>
+<pre><code>ds.css(&#39;background-color&#39;, &#39;&#39;);</code></pre>
+<p>Il est possible d'ajouter ou d'enlever une class CSS:</p>
+<pre><code>$(&#39;button&#39;).removeClass(&#39;btn-success&#39;);
+$(&#39;button&#39;).addClass(&#39;btn-primary&#39;);</code></pre>
+<p>Ou encore, en une seule instruction:</p>
+<pre><code>$(&#39;.col-sm-3&#39;).addClass(&#39;col-sm-2&#39;).removeClass(&#39;col-sm-3&#39;)</code></pre>
+<p>ce qui permet de redimensionner des colonnes à la volée...</p>
+<p>Cette méthode permet de modifier très facilement l'apparence d'un ou plusieurs éléments.</p>
+<p>Nous pouvons également modifier le contenu d'un élément:</p>
+<pre><code>colonneDuMilieu = $(&#39;.col-sm-4&#39;);
+colonneDuMilieu.html(&#39;&lt;h1&gt;Hôtels&lt;/h1&gt;&lt;p&gt;Liste de tous les hôtels...&lt;/p&gt;&#39;);</code></pre>
+<p>Nous pouvons donc modifier l'ensemble du contenu de la page Web avec quelques manipulations relativement simples...</p>
 
 
     </div>
