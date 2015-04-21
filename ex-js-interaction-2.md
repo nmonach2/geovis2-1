@@ -321,4 +321,77 @@ Le code complet de l'application jusqu'à ce point est disponible dans [app-v4](
 
 ## 4. Filtrer les hôtels
 
+Nous filtrons maintenant la liste des hôtels en fonction des critères sélectionnés dans les options à gauche. Le filtrage est déclenché avec un clic sur le bouton *«Chercher»* à travers l'appel de la fonction `filtrerHotels`.
 
+Le principe du filtrage est le suivant: au début nous affichons l'ensemble des hôtels. Puis nous traitons une option de filtrage après l'autre, et nous cachons simplement les hôtels dans la liste qui ne correspondent pas au critère. Ceci peut se faire simplement en ajoutant la classe CSS `hide` sur le `div` de l'hôtel, donc p.ex.:
+
+    $('#hotel-div-4').addClass('hide');
+
+Nous ne devons donc pas enlever l'hôtel de la liste, mais seulement le cacher. En plus, si nous ajoutons deux fois la même classe, ce n'est pas grave, l'instruction est simplement ignorée. Du coup, pour ré-afficher l'hôtel, il suffit de faire:
+
+    $('#hotel-div-4').removeClass('hide');
+
+Nous rendons également le marqueur correspondant transparent, ce qui peut se faire avec:
+
+    hotels.features[0].marker.setOpacity(0);
+
+et pour le ré-afficher:
+
+    hotels.features[0].marker.setOpacity(1);
+
+Concrètement, nous faisons une boucle à travers l'ensemble des hôtels dans la fonction `filtrerHotels`:
+
+    function filtrerHotels(){
+        var region = $('#region').val();
+        ...
+        
+        for (var i=0; i < hotels.features.length; i++){
+            var h = hotels.features[i];
+            
+            // afficher d'abord l'entrée dans la liste et le marker
+            $('#hotel-div-' + h.properties.id).removeClass('hide');
+            h.marker.setOpacity(1);
+            
+            // suite ici ...
+            
+        }
+    }
+
+Pour le filtre de la région, il suffit de vérifier si une région est sélectionnée, et le cas échéant si l'hôtel se trouve dans la région sélectionnée:
+
+    if (region != '' && h.properties.region != region) {
+        $('#hotel-div-' + h.properties.id).addClass('hide');
+        h.marker.setOpacity(0);
+    }
+
+La condition vérifie que la variable `region` n'est pas vide et le cas échéant que la région sélectionnée n'est pas identique à celle de l'hôtel. Si c'est le cas, nous cachons l'hôtel car il est en dehors de la région sélectionnée.
+
+Pour le prix minimum et maximum, le filtre se fait de manière similaire, c'est même un peu plus simple. Du coup, nous pouvons mettre les deux filtres dans la même condition:
+
+    if (h.properties.prix < minprix || h.properties.prix > maxprix) {
+        $('#hotel-div-' + h.properties.id).addClass('hide');
+        h.marker.setOpacity(0);
+    }
+
+Et finalement pour les trois catégories ville, rural et montagne (seulement le code pour la catégorie ville est montrée, les deux autres étant idendiques):
+
+    if (cat_ville == false && h.properties.categorie == 'Ville') {
+        $('#hotel-div-' + h.properties.id).addClass('hide');
+        h.marker.setOpacity(0);
+    }
+
+Bien évidemment, les données des filtres doivent correspondre aux données des hôtels du fichier JSON. Sinon, le filtre arrête de fonctionner correctement. Si on teste le code ci-dessus, on peut constater que le filtre de la région ne fonctionne pas parce que les valeurs du menu déroulant contiennent "VS", "VD" etc., tandis que le fichier JSON contient les noms complets. Nous ajustons donc le menu déroulant pour qu'il correspond aux valeurs du fichier JSON. Nous profitons aussi de cette occasion d'ajuster le contenu du menu.
+
+Le code final de la fonction `filtrerHotels` ainsi que le nouveau menu déroulant se trouvent dans [app-v5](https://github.com/christiankaiser/geovis2/tree/master/cours-7/ex-js-interaction/app-v5).
+
+Ce code final contient également une petite dernière modification: **un scroll pour la liste des hôtels**, pour éviter que la page devienne trop longue. Nous limitons la hauteur de la liste des hôtels à 520 pixels (valeur arbitraire), et s'il n'y a pas assez de place, un scrollbar ou similaire est affichée. Le code correspondant dans le fichier `index.html` est:
+
+    <div style="max-height: 520px; overflow: auto;" class="col-sm-4">
+        <div id="hotels-liste">
+            <p>Liste</p>
+        </div>
+    </div>
+
+où nous avons deux `div` imbriqués. Dans le `div` extérieur, nous appliquons deux styles CSS, le premier concerne la hauteur maximale (`max-height: 520px;`) et le deuxième l'affichage automatique du scrollbar (`overflow: auto;`).
+
+La première version de notre application choc sur les hôtels est désormais terminée. Nous pouvons donc procéder aux tests utilisateurs pour trouver les problèmes d'utilisation (bien entendu, il y en a...).
