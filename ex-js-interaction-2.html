@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Géovisualisation dynamique et traitement de données</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+
+        <h1 id="exercice-interaction-avec-javascript-partie-2">Exercice: Interaction avec Javascript (partie 2)</h1>
+        <p>Le début de l'exercice est disponible à l'URL <a href="http://christiankaiser.github.io/geovis2/ex-js-interaction.html">http://christiankaiser.github.io/geovis2/ex-js-interaction.html</a>.</p>
+        <p>L'objectif de cette deuxième partie de l'exercice est de reprendre l'application <a href="https://github.com/christiankaiser/geovis2/tree/master/cours-6/ex-js-interaction/app-v2">app-v2</a> et d'implémenter l'intégralité de l'interaction Javascript.</p>
+        <hr />
+        <h2 id="afficher-les-détails-de-lhôtel">1. Afficher les détails de l'hôtel</h2>
+        <p>Nous avons actuellement la liste des hôtels qui s'affiche dans la liste. Cependant, nous aimerions encore afficher les détails pour chaque hôtel à droite sous la carte. Dans notre cas, nous allons afficher notamment la description de l'hôtel en plus.</p>
+        <p>Avant d'écrire le code pour afficher ces détails, nous changeons un peu le style de la liste pour avoir un effet visuel sur le passage de la souris. Pour cela, nous modifions d'abord légèrement le code de la fonction <code>insererDonneesJson</code> pour définir une class CSS pour les différents <code>div</code> contenant les informations sur les hôtels. La nouvelle fonction se présente comme suit:</p>
+        <pre><code> 1  function insererDonneesJson(data){
+         2      hotels = data;  // garder les hotels en mémoire
+         3      var html = &#39;&#39;;
+         4      for (var i=0; i &lt; hotels.features.length; i++){
+         5          var h = hotels.features[i];
+         6          html += &#39;&lt;div class=&quot;hoteldiv&quot; id=&quot;hotel-div-&#39;+h.properties.id+&#39;&quot;&gt;&#39;;
+         7          html +=     &#39;&lt;h3&gt;&#39;+h.properties.name+&#39;&lt;/h3&gt;&#39;;
+         8          html +=     &#39;&lt;p&gt;Catégorie: &#39;+h.properties.categorie+&#39;&lt;/p&gt;&#39;;
+         9          html +=     &#39;&lt;p&gt;Prix: &#39;+h.properties.prix+&#39; CHF&lt;/p&gt;&#39;;
+        10          html += &#39;&lt;/div&gt;&#39;;
+        11      }
+        12      // insérer dans la liste
+        13      $(&#39;#hotels-liste&#39;).html(html);
+        14  }</code></pre>
+        <p>Le changement concerne la ligne 6 du script. Nous avons ajouté la class CSS <code>hoteldiv</code> pour chaque containeur d'un hôtel. A noter aussi que l'ancienne ligne 11 <code>html += '&lt;hr&gt;';</code> a été supprimée.</p>
+        <p>Nous pouvons également créer un fichier <code>style.css</code> pour y mettre nos classes CSS. Nous devons inclure ce fichier dans le <code>head</code> de notre fichier <code>index.html</code>:</p>
+        <pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;</code></pre>
+        <p>Voici un exemple de classe CSS pour la liste des hôtels:</p>
+        <pre><code>.hoteldiv {
+          padding: 2px 10px 5px 15px;
+          border: 1px solid #eee;
+        }
+
+        .hoteldiv:hover {
+          background-color: #f0f0f0;
+        }</code></pre>
+        <p>Nous pouvons désormais <strong>ajouter l'événement Javascript <code>mouseover</code></strong> qui déclenche l'affichage des détails de l'hôtel actuel. Il suffit de rajouter la ligne suivante à la fin de la fonction <code>insererDonneesJson</code>:</p>
+        <pre><code>$(&#39;.hoteldiv&#39;).on(&#39;mouseover&#39;, showHotelsDetails);</code></pre>
+        <p>... et il faut encore écrire la fonction <code>showHotelsDetails</code>... Nous commençons par écrire une fonction vide:</p>
+        <pre><code>function showHotelsDetails(evt){
+            // la suite ici
+        }</code></pre>
+        <p>Cette fonction prend un argument <code>evt</code> (évidemment vous l'appelez comme vous voulez) qui représente l'événement Javascript. Nous avons besoin de cet événement pour trouver l'identifiant du <code>div</code> qui à son tour nous permet de savoir de quel hôtel il s'agit. Pour cela il faut comprendre que les informations détaillées sur les hôtels se trouvent toujours dans la variable <code>hotels</code> qui a été créée sur la première ligne de la fonction <code>insererDonneesJson</code> et qui contient la <code>FeatureCollection</code> (c'est-à-dire grosso modo le fichier Shape). Nous devons chercher les informations détaillées dans cette variable, et pour cela nous devons connaître l'identifiant interne de l'hôtel qui se trouve dans l'<code>id</code> du <code>div</code> de l'hôtel. Alors comment extraire cet <code>id</code> de l'événement Javascript? Voici les étapes:</p>
+        <ol style="list-style-type: lower-alpha">
+        <li>la variable <code>evt.target</code> contient l'élément HTML qui se trouve sous la souris. Ça peut être le <code>div</code> lui-même, ou n'importe quel élément HTML à l'intérieur du <code>div</code>, donc par exemple le <code>h3</code> avec le nom de l'hôtel.</li>
+        <li>nous regardons si notre <code>evt.target</code> contient la classe CSS <code>hoteldiv</code>. C'est une façon simple de savoir si l'élément HTML que nous avons est le <code>div</code> de l'hôtel, ou un des éléments à l'intérieur. Nous pouvons faire ceci avec <code>$(evt.target).hasClass('hoteldiv')</code>.</li>
+        <li>si notre «target» n'est pas le <code>div</code> de l'hôtel, nous devons le trouver. Ceci peut se faire grâce à la fonction jQuery de recherche de parents (les parents sont tous les éléments HTML à l'extérieur de l'élément actuel; un élément HTML à l'intérieur serait dans cette terminologie un enfant). Plus spécifiquement, nous cherchons un parent qui a comme class CSS <code>hoteldiv</code>, ce qui se présente comme suit: $(evt.target).parents('.hoteldiv').</li>
+        </ol>
+        <p>Nous pouvons extraire l'<code>id</code> du <code>div</code> de l'hôtel avec le code suivant:</p>
+        <pre><code>function showHotelsDetails(evt){
+            var divId = $(evt.target).attr(&#39;id&#39;);
+            if ($(evt.target).hasClass(&#39;hoteldiv&#39;) == false){
+                divId = $(evt.target).parents(&#39;.hoteldiv&#39;).attr(&#39;id&#39;);
+            }
+            // contrôle du fonctionnement:
+            console.log(divId);
+        }</code></pre>
+        <p>Il est une bonne pratique de tester en permanence l'avancement de notre projet en écrivant des valeurs dans notre console Javascript. Si nous exécutons notre application et passons avec la souris sur la liste des hôtels, la console Javascript doit contenir les identifiants des <code>div</code>.</p>
+        <p>L'identifiant de l'hôtel est uniquement la dernière partie de l'identifiant du <code>div</code>, c'est-à-dire le chiffre à la fin. Nous pouvons extraire cette valeur en remplaçant &quot;hotel-div-&quot; par rien:</p>
+        <pre><code>var hotelId = divId.replace(&quot;hotel-div-&quot;, &quot;&quot;);</code></pre>
+        <p>Il y a ici comme souvent d'autres manières de faire la même chose. Une des alternatives est d'extraire une partie de la chaîne de caractère, c'est-à-dire la partie qui commence à partir du caractère 11 (=index 10):</p>
+        <pre><code>var hotelId = divId.substr(10);</code></pre>
+        <p>Il est maintenant temps de chercher l'hôtel avec cet identifiant dans la variable <code>hotels</code>. Pour cela, nous utilisons une méthode un peu rudimentaire: regarder un hôtel après l'autre pour voir si l'identifiant correspond. Et si c'est le cas, on mémorise cet identifiant. Ça peut paraître très inefficace de chercher dans l'ensemble de la liste des hôtels, surtout si nous avions 10'000 hôtels. Cependant, il s'avère qu'un téléphone mobile est en mesure d'exécuter environ 1.4 milliard d'instructions par seconde (à peu près 1500 fois plus rapide qu'un <a href="http://fr.wikipedia.org/wiki/Commodore_64">Commodore 64 de 1982</a>), ce qui est amplément suffisant pour chercher dans la liste entière de quelques hôtels... Un ordinateur est à peu près 2 fois plus vite que le téléphone. Voici le code qui passe à travers l'ensemble des hôtels pour trouver l'hôtel avec l'identifiant cherché:</p>
+        <pre><code>var hotel = null;
+        for (var i=0; i &lt; hotels.features.length; i++){
+            if (hotels.features[i].properties.id == hotelId){
+                hotel = hotels.features[i];
+            }
+        }</code></pre>
+        <p>Nous pouvons maintenant afficher les détails de l'hôtel. Pour cela, nous donnons un identifiant <code>id=&quot;details&quot;</code> au <code>div</code> qui contiendra ces détails. Par la suite, voici un exemple de code qui permet d'afficher l'ensemble des informations disponibles sur un hôtel:</p>
+        <pre><code>var h = &#39;&lt;div id=&quot;hotel-details-&#39;+hotel.id+&#39;&quot;&gt;&#39;;
+        h += &#39;&lt;h3&gt;&#39;+hotel.name+&#39;&lt;/h3&gt;&#39;;
+        h += &#39;&lt;p&gt;Catégorie: &#39;+hotel.categorie+&#39;&lt;/p&gt;&#39;;
+        h += &#39;&lt;p&gt;Région: &#39;+hotel.region+&#39;&lt;/p&gt;&#39;;
+        h += &#39;&lt;p&gt;Description:&lt;br&gt;&#39;+hotel.description+&#39;&lt;/p&gt;&#39;;
+        h += &#39;&lt;p&gt;Prix: &#39;+hotel.prix+&#39; CHF&#39;;
+        h += &#39;&lt;/div&gt;&#39;;
+        $(&#39;#details&#39;).html(h);</code></pre>
+        <p>L'application complète jusqu'à cette étape se trouve dans le dossier <a href="https://github.com/christiankaiser/geovis2/tree/master/cours-7/ex-js-interaction/app-v3">app-v3</a>.</p>
+        <hr />
+        <h2 id="hôtels-sur-la-carte">2. Hôtels sur la carte</h2>
+        <p>Un problème évident pour le moment est que les hôtels ne sont pas présentes sur la carte. Ce n'est pas trop compliqué de rajouter un marqueur. Nous ajoutons le marqueur au moment où nous avons reçu les données du fichier JSON, dans la fonction <code>insererDonneesJson</code>:</p>
+        <pre><code>for (var i=0; i &lt; hotels.features.length; i++){
+            var coords = hotels.features[i].geometry.coordinates;
+            var marker = L.marker([coords[1], coords[0]]).addTo(map);
+        }    </code></pre>
+        <p>Nous allons également garder en mémoire le marqueur pour chaque hôtel, pour pouvoir l'utiliser plus tard. Il suffit d'ajour une ligne dans la boucle ci-dessus pour sauvegarder le marqueur à l'intérieur de la variable <code>hotels</code>:</p>
+        <pre><code>hotels.features[i].marker = marker;</code></pre>
+        <p>Maintenant, on aimerait mettre en évidence le marqueur de l'hôtel de la liste sur lequel se trouve le curseur. Pour ce faire, nous allons remplacer simplement l'icône du marqueur. Ceci peut se faire à l'intérieur de la fonction <code>showHotelsDetails</code>. Tout d'abord, nous créons une nouvelle icône de marqueur, p.ex.</p>
+        <pre><code>var redHotelIcon = L.icon({
+            iconUrl: &#39;https://github.com/christiankaiser/map-marker-icons/raw/master/icons/plain-red-hotel.png&#39;,
+            iconSize: [32, 41],
+            iconAnchor:   [16, 40],
+            popupAnchor:  [0, -40]
+        });</code></pre>
+        <p>... et puis pour remplacer l'icône d'un hôtel:</p>
+        <pre><code>hotel.marker.setIcon(redHotelIcon);</code></pre>
+        <p>Evidemment, il faut aussi remettre l'icône normale pour les autres marqueurs, sinon, ils gardent l'icône de remplacement pour toujours. Pour remettre l'icône par défaut, on peut écrire:</p>
+        <pre><code>hotel.marker.setIcon(new L.Icon.Default());</code></pre>
+        <p>Si on met ensemble les pièces du puzzle, la boucle à travers l'ensemble des hôtels dans la fonction <code>showHotelsDetails</code> peut être écrite comme suit:</p>
+        <pre><code>...
+
+        // marker pour l&#39;hôtel sélectionné
+        var redHotelIcon = L.icon({
+            iconUrl: &#39;https://github.com/christiankaiser/map-marker-icons/raw/master/icons/plain-red-hotel.png&#39;,
+            iconSize: [32, 41],
+            iconAnchor:   [16, 40],
+            popupAnchor:  [0, -40]
+        });
+
+        // chercher l&#39;hôtel dans la liste
+        var hotel = null;
+        for (var i=0; i &lt; hotels.features.length; i++){
+            if (hotels.features[i].properties.id == hotelId){
+                hotel = hotels.features[i].properties;
+                hotels.features[i].marker.setIcon(redHotelIcon);
+            } else {
+                hotels.features[i].marker.setIcon(new L.Icon.Default());
+            }
+        }
+
+        ...</code></pre>
+        <p>Naturellement, nous aimerions aussi que les détails de l'hôtel soit affichés également si on passe avec la souris sur un des marqueurs. Pour cela, il faut attacher un événement au marqueur, au moment où on insère le marqueur sur la carte:</p>
+        <pre><code>marker.on(&#39;mouseover&#39;, showHotelsDetailsMarker);</code></pre>
+        <p>La fonction <code>showHotelsDetailsMarker</code> est similaire à la fonction <code>showHotelsDetails</code>, mais pas identique. La façon de trouver de quel hôtel il s'agit est très différente. En fait, le «target» de l'événement est le marqueur et non un <code>div</code> ou un autre élément HTML. Du coup, la recherche de l'hôtel dans la liste se fait un peu différemment:</p>
+        <pre><code>function showHotelsDetailsMarker(evt){
+            // trouver l&#39;id de l&#39;hôtel
+            var m = evt.target;
+            var hotelId = null;
+            for (var i=0; i &lt; hotels.features.length; i++){
+                if (m == hotels.features[i].marker){
+                    hotelId = hotels.features[i].properties.id;
+                }
+            }
+    
+            // la suite ici ...
+        }</code></pre>
+        <p>A partir de cet endroit, les deux fonctions sont strictement identiques. Une des règles d'or dans la programmation dit qu'il ne faut pas écrire deux fois le même code, car sinon il faut corriger une erreur potentielle deux fois ou plus. Nous pouvons facilement restructurer un peu notre code pour sortir la partie commune de la fonction <code>showHotelsDetails</code> dans une fonction à part, et appeler cette nouvelle fonction depuis les deux fonctions <code>showHotelsDetails</code> et <code>showHotelsDetailsMarker</code>, ce qui peut donner quelque chose comme:</p>
+        <pre><code>function highlightHotel(hotelId){
+            // marker pour l&#39;hôtel sélectionné
+            var redHotelIcon = L.icon({
+                iconUrl: &#39;https://github.com/christiankaiser/map-marker-icons/raw/master/icons/plain-red-hotel.png&#39;,
+                iconSize: [32, 41],
+                iconAnchor:   [16, 40],
+                popupAnchor:  [0, -40]
+            });
+
+            // chercher l&#39;hôtel dans la liste
+            var hotel = null;
+            for (var i=0; i &lt; hotels.features.length; i++){
+                if (hotels.features[i].properties.id == hotelId){
+                    hotel = hotels.features[i].properties;
+                    hotels.features[i].marker.setIcon(redHotelIcon);
+                } else {
+                    hotels.features[i].marker.setIcon(new L.Icon.Default());
+                }
+            }
+
+            // afficher les détails
+            var h = &#39;&lt;div id=&quot;hotel-details-&#39;+hotel.id+&#39;&quot;&gt;&#39;;
+            h += &#39;&lt;h3&gt;&#39;+hotel.name+&#39;&lt;/h3&gt;&#39;;
+            h += &#39;&lt;p&gt;Catégorie: &#39;+hotel.categorie+&#39;&lt;/p&gt;&#39;;
+            h += &#39;&lt;p&gt;Région: &#39;+hotel.region+&#39;&lt;/p&gt;&#39;;
+            h += &#39;&lt;p&gt;Description:&lt;br&gt;&#39;+hotel.description+&#39;&lt;/p&gt;&#39;;
+            h += &#39;&lt;p&gt;Prix: &#39;+hotel.prix+&#39; CHF&#39;;
+            h += &#39;&lt;/div&gt;&#39;;
+            $(&#39;#details&#39;).html(h);
+        }
+
+        function showHotelsDetailsMarker(evt){
+            // trouver l&#39;id de l&#39;hôtel
+            var m = evt.target;
+            var hotelId = null;
+            for (var i=0; i &lt; hotels.features.length; i++){
+                if (m == hotels.features[i].marker){
+                    hotelId = hotels.features[i].properties.id;
+                }
+            }
+            highlightHotel(hotelId);
+        }
+
+        function showHotelsDetails(evt){
+            // extraire l&#39;id de l&#39;hôtel
+            var divId = $(evt.target).attr(&#39;id&#39;);
+            if ($(evt.target).hasClass(&#39;hoteldiv&#39;) == false){
+                divId = $(evt.target).parents(&#39;.hoteldiv&#39;).attr(&#39;id&#39;);
+            }
+            var hotelId = divId.replace(&quot;hotel-div-&quot;, &quot;&quot;);
+            highlightHotel(hotelId);
+        }</code></pre>
+        <hr />
+        <h2 id="zoom-sur-un-hôtel">3. Zoom sur un hôtel</h2>
+        <p>Il peut être utile de proposer un bouton qui permet de faire un zoom sur l'hôtel sélectionné. Ce bouton pourrait être placé en bas des informations détaillées. Le placement du bouton peut se faire dans la fonction <code>highlightHotel</code>, au moment où on génère le code HTML avec les détails, p.ex.:</p>
+        <pre><code>h += &#39;&lt;p&gt;&lt;button id=&quot;hotelZoom&quot; class=&quot;btn btn-default btn-xs&quot;&gt;Montrer sur la carte&lt;/button&gt;&lt;/p&gt;&#39;;</code></pre>
+        <p>Par la suite, il faut encore placer un événement Javascript pour lancer une fonction qui permettrait d'effectuer le zoom sur l'hôtel. Ceci peut se faire à la fin de la même fonction:</p>
+        <pre><code>$(&#39;#hotelZoom&#39;).on(&#39;click&#39;, hotelZoom);</code></pre>
+        <p>où <code>hotelZoom</code> est la fonction à créer. Cette ligne de code doit intervenir après la ligne</p>
+        <pre><code>$(&#39;#details&#39;).html(h);</code></pre>
+        <p>car c'est seulement à ce moment où le bouton est inséré dans le DOM et qu'il est possible d'y lier un événement Javascript.</p>
+        <p>Maintenant, on peut écrire la fonction <code>hotelZoom</code>. La première chose à faire est extraire l'id de l'hôtel. Ceci peut se faire en utilisant l'<code>id</code> du <code>div</code> entourant le bouton:</p>
+        <pre><code>var hotelId = $(evt.target).parents(&#39;div&#39;).attr(&#39;id&#39;).replace(&#39;hotel-details-&#39;, &#39;&#39;);</code></pre>
+        <p>Par la suite, il faut trouver les coordonnées géographiques de l'hôtel dans la variable <code>hotels</code>. Il faut encore une fois passer à travers toute la liste des hôtels:</p>
+        <pre><code>var coords = null;
+        for (var i=0; i &lt; hotels.features.length; i++){
+            if (hotels.features[i].properties.id == hotelId){
+                coords = hotels.features[i].geometry.coordinates;
+            }
+        }</code></pre>
+        <p>Maintenant, on peut centrer la carte sur l'hôtel:</p>
+        <pre><code>map.panTo([coords[1], coords[0]]);</code></pre>
+        <p>Il peut être désirable de faire un zoom si la carte montre une étendu trop grande. On peut par exemple décider de faire qu'il faut avoir au minimum un niveau de zoom de 10. Nous pouvons donc par exemple demander le niveau de zoom actuel, et s'il est inférieur à 10, nous le mettons sur 10. Ceci peut se faire comme ça:</p>
+        <pre><code>var z = map.getZoom();
+        if (z &lt; 10) {
+            z = 10;
+        }
+        map.setZoom(z);</code></pre>
+        <p>Les 4 premières lignes de ce code peuvent être écrites comme ça:</p>
+        <pre><code>var z = map.getZoom() &lt; 10 ? 10 : map.getZoom();</code></pre>
+        <p>Il s'agit d'une condition <code>if (...) { ... } else { ... }</code> sur une ligne, avec le résultat qui est attribué à la variable <code>z</code>. La structure est: <code>condition ? valeur si vrai : valeur si faux;</code>. Donc, on pourrait lire la ligne ci-dessus comme *«si <code>map.getZoom() est plus petit que 10</code> donne la valeur de <code>10</code> et sinon la valeur de <code>map.getZoom()</code>». Choisissez la façon d'écrire que vous préférez.</p>
+        <p>Il est aussi possible de combiner une instruction <code>map.setZoom</code> et <code>map.panTo</code>:</p>
+        <pre><code>map.setView( [coord[1], coord[0]], z );</code></pre>
+        <p>qui est l'instruction que nous retenons finalement dans la fonction <code>hotelZoom</code>:</p>
+        <pre><code>function hotelZoom(evt){
+            var hotelId = $(evt.target).parents(&#39;div&#39;).attr(&#39;id&#39;).replace(&#39;hotel-details-&#39;, &#39;&#39;);
+
+            // chercher les coordonnées de l&#39;hôtel
+            var coords = null;
+            for (var i=0; i &lt; hotels.features.length; i++){
+                if (hotels.features[i].properties.id == hotelId){
+                    coords = hotels.features[i].geometry.coordinates;
+                }
+            }
+
+            // Centrer la carte sur l&#39;hôtel, et augmenter le zoom si le niveau et inférieur à 10
+            var z = map.getZoom() &lt; 10 ? 10 : map.getZoom();
+            map.setView([coords[1], coords[0]], z);
+
+        }</code></pre>
+        <p>Le code complet de l'application jusqu'à ce point est disponible dans <a href="https://github.com/christiankaiser/geovis2/tree/master/cours-7/ex-js-interaction/app-v4">app-v4</a>.</p>
+        <hr />
+        <h2 id="filtrer-les-hôtels">4. Filtrer les hôtels</h2>
+        
+
+
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+  </body>
+</html>

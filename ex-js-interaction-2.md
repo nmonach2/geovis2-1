@@ -245,6 +245,76 @@ A partir de cet endroit, les deux fonctions sont strictement identiques. Une des
 
 ## 3. Zoom sur un hôtel
 
+Il peut être utile de proposer un bouton qui permet de faire un zoom sur l'hôtel sélectionné. Ce bouton pourrait être placé en bas des informations détaillées. Le placement du bouton peut se faire dans la fonction `highlightHotel`, au moment où on génère le code HTML avec les détails, p.ex.:
+
+    h += '<p><button id="hotelZoom" class="btn btn-default btn-xs">Montrer sur la carte</button></p>';
+
+Par la suite, il faut encore placer un événement Javascript pour lancer une fonction qui permettrait d'effectuer le zoom sur l'hôtel. Ceci peut se faire à la fin de la même fonction:
+
+    $('#hotelZoom').on('click', hotelZoom);
+
+où `hotelZoom` est la fonction à créer. Cette ligne de code doit intervenir après la ligne 
+
+    $('#details').html(h);
+
+car c'est seulement à ce moment où le bouton est inséré dans le DOM et qu'il est possible d'y lier un événement Javascript.
+
+Maintenant, on peut écrire la fonction `hotelZoom`. La première chose à faire est extraire l'id de l'hôtel. Ceci peut se faire en utilisant l'`id` du `div` entourant le bouton:
+
+    var hotelId = $(evt.target).parents('div').attr('id').replace('hotel-details-', '');
+
+Par la suite, il faut trouver les coordonnées géographiques de l'hôtel dans la variable `hotels`. Il faut encore une fois passer à travers toute la liste des hôtels:
+
+    var coords = null;
+    for (var i=0; i < hotels.features.length; i++){
+        if (hotels.features[i].properties.id == hotelId){
+            coords = hotels.features[i].geometry.coordinates;
+        }
+    }
+
+Maintenant, on peut centrer la carte sur l'hôtel:
+
+    map.panTo([coords[1], coords[0]]);
+
+Il peut être désirable de faire un zoom si la carte montre une étendu trop grande. On peut par exemple décider de faire qu'il faut avoir au minimum un niveau de zoom de 10. Nous pouvons donc par exemple demander le niveau de zoom actuel, et s'il est inférieur à 10, nous le mettons sur 10. Ceci peut se faire comme ça:
+
+    var z = map.getZoom();
+    if (z < 10) {
+        z = 10;
+    }
+    map.setZoom(z);
+
+Les 4 premières lignes de ce code peuvent être écrites comme ça:
+
+    var z = map.getZoom() < 10 ? 10 : map.getZoom();
+
+Il s'agit d'une condition `if (...) { ... } else { ... }` sur une ligne, avec le résultat qui est attribué à la variable `z`. La structure est: `condition ? valeur si vrai : valeur si faux;`. Donc, on pourrait lire la ligne ci-dessus comme *«si `map.getZoom() est plus petit que 10` donne la valeur de `10` et sinon la valeur de `map.getZoom()`». Choisissez la façon d'écrire que vous préférez.
+
+Il est aussi possible de combiner une instruction `map.setZoom` et `map.panTo`:
+
+    map.setView( [coord[1], coord[0]], z );
+
+qui est l'instruction que nous retenons finalement dans la fonction `hotelZoom`:
+
+    function hotelZoom(evt){
+        var hotelId = $(evt.target).parents('div').attr('id').replace('hotel-details-', '');
+    
+        // chercher les coordonnées de l'hôtel
+        var coords = null;
+        for (var i=0; i < hotels.features.length; i++){
+            if (hotels.features[i].properties.id == hotelId){
+                coords = hotels.features[i].geometry.coordinates;
+            }
+        }
+    
+        // Centrer la carte sur l'hôtel, et augmenter le zoom si le niveau et inférieur à 10
+        var z = map.getZoom() < 10 ? 10 : map.getZoom();
+        map.setView([coords[1], coords[0]], z);
+    
+    }
+
+Le code complet de l'application jusqu'à ce point est disponible dans [app-v4](https://github.com/christiankaiser/geovis2/tree/master/cours-7/ex-js-interaction/app-v4).
+
 
 ---
 
