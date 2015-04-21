@@ -89,9 +89,11 @@ function highlightHotel(hotelId){
     h += '<p>Catégorie: '+hotel.categorie+'</p>';
     h += '<p>Région: '+hotel.region+'</p>';
     h += '<p>Description:<br>'+hotel.description+'</p>';
-    h += '<p>Prix: '+hotel.prix+' CHF';
+    h += '<p>Prix: '+hotel.prix+' CHF</p>';
+    h += '<p><button id="hotelZoom" class="btn btn-default btn-xs">Montrer sur la carte</button></p>';
     h += '</div>';
     $('#details').html(h);
+    $('#hotelZoom').on('click', hotelZoom);
 }
 
 function showHotelsDetailsMarker(evt){
@@ -114,6 +116,23 @@ function showHotelsDetails(evt){
     }
     var hotelId = divId.replace("hotel-div-", "");
     highlightHotel(hotelId);
+}
+
+function hotelZoom(evt){
+    var hotelId = $(evt.target).parents('div').attr('id').replace('hotel-details-', '');
+    
+    // chercher les coordonnées de l'hôtel
+    var coords = null;
+    for (var i=0; i < hotels.features.length; i++){
+        if (hotels.features[i].properties.id == hotelId){
+            coords = hotels.features[i].geometry.coordinates;
+        }
+    }
+    
+    // Centrer la carte sur l'hôtel, et augmenter le zoom si le niveau et inférieur à 10
+    var z = map.getZoom() < 10 ? 10 : map.getZoom();
+    map.setView([coords[1], coords[0]], z);
+    
 }
 
 // une fois que le document est prêt, on lance le script:
