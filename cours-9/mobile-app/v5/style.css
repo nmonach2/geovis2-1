@@ -1,0 +1,15 @@
+.ui-content .ui-listview, .ui-panel-inner>.ui-listview {
+    margin: 0;
+}
+
+.ui-content {
+    padding: 5px 20px 70px 20px !important;
+}
+
+img {
+    width: 100%;
+}
+
+td {
+    padding-right: 20px;
+}
