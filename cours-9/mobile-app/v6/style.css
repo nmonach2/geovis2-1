@@ -1,0 +1,29 @@
+.ui-content .ui-listview, .ui-panel-inner>.ui-listview {
+    margin: 0;
+}
+
+.ui-content {
+    padding: 5px 20px 70px 20px !important;
+}
+
+img {
+    width: 100%;
+}
+
+td {
+    padding-right: 20px;
+}
+
+#map .ui-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 56px;
+    left: 0;
+    padding: 0 !important;
+}
+
+#mapdiv {
+    width: 100%;
+    height: 100%;
+}
