@@ -1,6 +1,6 @@
 # Projet de Géovis
 
-Le but du projet de Géovis est de mettre en oeuvre les techniques et méthodes présentées dans le cadre du cours. Il s'agit de **réaliser un projet de communication d'une problématique spatiale ou spatio-temporelle à travers une application interactive**. La problématique autour du projet de Géovis est multiple et porte sur les objets suivants:
+Le but du projet de Géovis est de mettre en oeuvre les techniques et méthodes présentées dans le cadre du cours. Il s'agit de **réaliser un projet de communication d'une problématique spatiale ou spatio-temporelle à travers un projet de géovisualisation interactif**. La problématique autour du projet de Géovis est multiple et porte sur les objets suivants:
 
 - Une **communication** adaptée et efficace
 - La mise en oeuvre des **bonnes méthodes** au niveau de la visualisation et de l'interaction
@@ -10,10 +10,18 @@ Le but du projet de Géovis est de mettre en oeuvre les techniques et méthodes 
 
 Étant donné qu'un des objectifs principaux porte sur une communication efficace, il est important de tenir compte du petit guide sur les [**10 principes pour une application Géovis efficace**](https://github.com/christiankaiser/visage/raw/master/projet/10principes-app-geovis.pdf), disponible dans les documents du cours.
 
+Le projet de géovisualisation peut prendre une des formes suivantes:
+
+- Un **outil d'exploration** de données spatiales
+- Un **outil de découverte** d'une problématique spatiale
+- Une **histoire interactive** autour d'une problématique spatiale
+- Une **application de service localisée**, mobile ou non
+- Un **projet de géovisualisation expérimental** pour tester l'efficacité d'une nouvelle méthode de visualisation interactive
+
 
 ## Thématique du projet
 
-La thématique peut être choisie librement, dans les limites où elle se prête à un projet de géovisualisation bien évidemment. Elle peut être liée au mémoire, où à n'importe quelle autre activité personnelle. Par contre, le projet devra contenir au moins une carte interactive, et la thématique doit bien évidemment s'y prêter. Par ailleurs, votre projet pourra également contenir d'autres éléments facilitant la communication, par exemple d'autres formes de visualisation (des graphiques p.ex.), des animations, vidéos, jeux, etc.
+La thématique peut être choisie librement, dans les limites où elle se prête à un projet de géovisualisation bien évidemment. Elle peut être liée au mémoire, ou à n'importe quelle autre activité personnelle. Par contre, le projet devra contenir au moins une carte interactive, et la thématique doit bien évidemment s'y prêter. Par ailleurs, votre projet pourra également contenir d'autres éléments facilitant la communication, par exemple d'autres formes de visualisation (des graphiques p.ex.), des animations, vidéos, jeux, etc.
 
 Il est aussi possible de consacrer le projet à un défi scientifique actuel au niveau de la géovisualisation. Ainsi, il est envisageable de conduire par exemple des tests sur l'efficacité d'une forme précise de visualisation interactive.
 
@@ -27,7 +35,7 @@ Le projet peut se rapporter à un sujet en particulier de la géovisualisation, 
 
 - Création d'une application de cartographie dynamique, avec alimentation en données depuis le Web
 
-- Création d'un simple tableau de bord interactif présentant une problématique sous forme de différentes visualisations liées
+- Création d'un simple tableau de bord interactif (dashboard) présentant une problématique sous forme de différentes visualisations liées
 
 - Application mobile avec un aspect de Géovisualisation, comme par exemple le [GéoGuide Lausanne](http://igd.unil.ch/geoguide).
 
@@ -35,19 +43,22 @@ Le projet peut se rapporter à un sujet en particulier de la géovisualisation, 
 
 - Comparer l'efficacité de deux types de visualisation présentant le même phénomène, à l'aide de tests d'utilisateurs et des tâches précises à exécuter.
 
-Plusieurs exemples d'application de géovisualisation seront montrés et discutés en classe durant le semestre.
+- Racconter une *histoire interactive* d'une problématique spatiale ([exemple sur les salaires aux États-Unis](http://www.nytimes.com/2013/07/22/business/in-climbing-income-ladder-location-matters.html)).
 
 
 ## Déroulement
 
-- Le projet commence dès la première semaine du semestre de printemps 2015 avec une première réflexion sur la thématique. Il durera jusqu'en décembre 2015 avec une présentation des résultats.
+- Le projet commence dès la première semaine du semestre de printemps 2016 avec une première réflexion sur la thématique. Il durera jusqu'en décembre 2016 avec une présentation des résultats.
 - Le projet peut être fait seul ou en groupe de 2 ou 3 personnes.
-- Durant le semestre de printemps, le projet est discuté et encadré de manière régulière pendant les heures de cours. Pendant le semestre d'automne, le travail se fait de manière très autonome avec un encadrement uniquement sur demande.
+- Nous travaillons sur le projet tout le long du semestre de printemps déjà. Le calendrier détaillé se trouve en bas (mis à jour régulièrement durant le semestre).
+- Pendant le semestre d'automne, le travail se fait en principe de manière autonome avec un encadrement uniquement sur demande. Un point sur l'avancement sera fait en octobre (voir programme du cours), avec un contrôle sur la progression du travail et la possibilité de poser des questions.
 
 
 ## Étapes d'élaboration du projet
 
-Le projet sera réalisé en suivant les étapes suivantes:1. **Planification conceptuelle**: décrire et schématiser le produit final
+Le projet sera réalisé en suivant les étapes suivantes:
+
+1. **Planification conceptuelle**: décrire et schématiser le produit final
 	- Réfléchir sur les possibilités de visualisation
 	- Dessiner l'application finale, discuter en classe, avec des collègues
 	- Réfléchir encore...
@@ -59,10 +70,12 @@ Le projet sera réalisé en suivant les étapes suivantes:1. **Planificatio
 	- Avoir une première version (non fonctionnelle) aussi vite que possible
 	- Discuter en classe, avec les collègues, réfléchir, modifier, discuter encore, etc.
 
-4. **Réalisation**: progressivement implémenter l'application	- À partir du prototype, réaliser une fonction après l'autre, de manière itérative
+4. **Réalisation**: progressivement implémenter l'application
+	- À partir du prototype, réaliser une fonction après l'autre, de manière itérative
 	- Améliorer le produit progressivement, en suivant les itérations du cercle de la frustration (eh oui!)
 	- Tester, discuter, réfléchir, modifier, etc. Tester notamment la pertinence de vos visualisations et de l'interactivité. Vous demander constamment si votre choix est optimal, s'il y avait une meilleure solution.
-5. **Finalisation**: Tester, tester, tester! Documenter!
+
+5. **Finalisation**: Tester, tester, tester! Documenter!
 	- Planifier les tests, établir un protocole des tests
 	- Tester le produit avec des utilisateurs réels
 	- Si nécessaire retourner à l'étape 4!
@@ -73,18 +86,78 @@ Le projet sera réalisé en suivant les étapes suivantes:1. **Planificatio
 
 ## Rendu et présentation
 
-Le rendu du projet consistera en l'application interactive ainsi qu'une présentation orale en décembre 2015. 
+Le rendu du projet consistera en l'application interactive ainsi qu'une présentation orale en décembre 2016. Les détails sur le rendu seront publiés ici plus tard dans le semestre.
 
-L'application interactive devra être rendue par le biais d'un serveur qui sera communiqué ultérieurement. Le rendu se fera sous forme d'archive ZIP. L'archive ZIP doit contenir l'ensemble des données nécessaires à faire tourner votre application, ainsi qu'un fichier «readme.txt» expliquant comment votre projet est structuré, et comment mettre en route votre application.
+La présentation du projet aura lieu pendant le cours «Concepts de base en géovisualisation», en présence de vos collègues et autres personnes intéressées par la géovisualisation. La présentation aura lieu en décembre 2016, en principe le 14 décembre. La date sera confirmée durant le semestre d'automne, une fois l'horaire des cours et le programme détaillé du cours de «Concepts de base en géovisualisation» sont connus. La durée de la présentation dépendra du nombre de projets, mais sera en principe entre 5 et 10 minutes.
 
-Alternativement, au lieu de déposer l'archive ZIP sur un serveur, vous pouvez publier votre projet sur [GitHub](https://github.com) et communiquer l'URL vers votre projet. La condition pour cette forme de rendu est que vous ne violez pas de droits d'auteurs ou similaire en publiant votre application.
-
-La présentation du projet aura lieu pendant le cours «Concepts de base en géovisualisation», en présence de vos collègues et autres personnes intéressées par la géovisualisation. La présentation aura lieu en décembre 2015, probablement le 9 ou le 16 décembre. La date sera confirmée durant le semestre d'automne, une fois le programme détaillé du cours de «Concepts de base en géovisualisation» est connu. La durée de la présentation dépendra du nombre de projets, mais sera en principe entre 5 et 10 minutes.
-
-Le délai de rendu de l'application finale sera le 18 décembre 2015. Vous êtes évidemment libres de rendre votre projet avant, dès qu'il sera terminé.
+Le délai de rendu de l'application finale sera le 18 décembre 2016. Vous êtes évidemment libres de rendre votre projet avant, dès qu'il sera terminé.
 
 ### Critères pour l'évaluation du projet
 
-- Présentation claire: quel est le but du projet?- Navigation aisée?- Qualité de la présentation graphique- Qualité de l'interaction: consistance de l'interface- Géovisualisation: règles respectées (sémiologie, principes d'efficacité), qualité des cartes, etc.- Considération des tests utilisateurs
+- Présentation claire: quel est le but du projet?
+- Navigation aisée?
+- Qualité de la présentation graphique
+- Qualité de l'interaction: consistance de l'interface
+- Géovisualisation: règles respectées (sémiologie, principes d'efficacité), qualité des cartes, etc.
+- Considération des tests utilisateurs
+- Présentation orale du projet
+- Qualité du rapport final
+
+
+## Calendrier pour le projet de géovisualisation
+
+<table>
+<tr>
+	<th>Date</th>
+	<th>Étape</th>
+	<th>Délai</th>
+</tr>
+<tr>
+	<td>23.2.</td>
+	<td>Définition du sujet</td>
+	<td>1.3.</td>
+</tr>
+<tr>
+	<td>1.3.</td>
+	<td>Récolte des données de base</td>
+	<td>27.4.</td>
+</tr>
+<tr>
+	<td colspan="3"><i>Suite à venir...</i></td>
+</tr>
+<tr>
+	<td></td>
+	<td>Publication du prototype</td>
+	<td>16.5.</td>
+</tr>
+<tr>
+	<td>17.5.</td>
+	<td>Discussion de quelques prototypes</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td>Publication de la version bêta</td>
+	<td>12.10. (à confirmer)</td>
+</tr>
+<tr>
+	<td>19.10. (à confirmer)</td>
+	<td>Discussion du progrès des projets</td>
+	<td></td>
+</tr>
+<tr>
+	<td>14.12. (à confirmer)</td>
+	<td>Présentation des projets</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td>Rendu final (projet+rapport)</td>
+	<td>18.12.</td>
+</tr>
+</table>
+
+
+
 
 
