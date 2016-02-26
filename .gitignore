@@ -1,1 +1,2 @@
 *.key
+notebooks/.ipynb_checkpoints/*
