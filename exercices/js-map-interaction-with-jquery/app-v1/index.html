@@ -1,0 +1,108 @@
+<html>
+<head>
+    <title>Hôtels de rêve</title>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Chargement de jQuery -->
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    
+    <!-- Chargement de 3 fichiers nécessaires pour Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    
+    <!-- Chargement de 2 fichiers pour Leaflet -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    
+    <!-- Et encore une fois un peu de bricolage supplémentaire pour Internet Explorer 8.
+        Notez que c'est à l'intérieur d'un commentaire, mais Internet Explorer verra que ça le
+        concerne et exécutera le code tout de même. -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <!-- Chargement de notre code Javascript -->
+    <script src="script.js"></script>
+
+</head>
+<body>
+    
+    <!-- Voici le container. Classe CSS "container" est définie par Bootstrap. -->
+    <div class="container" style="min-height: 400px;">
+
+        <!-- Le titre de la page. "page-header" et "lead" sont définis par Bootstrap. -->
+        <div class="page-header">
+            <h1>Hôtels de rêve</h1>
+            <p class="lead">Hôtels hors du commun à des endroits hors du commun</p>
+        </div>
+
+        <!-- Et voici une ligne (row) avec 3 colonnes 
+            (row, col-xs-3, col-xs-6 etc sont tous définis par Bootstrap) -->
+        <div class="row">
+            <div class="col-sm-3">
+                
+                <div class="form-group">
+                    <label for="region">Région:</label>
+                    <select id="region" class="form-control input-sm">
+                        <option value="">--</option>
+                        <option value="JU">Jura</option>
+                        <option value="NE">Neuchâtel</option>
+                        <option value="VD">Vaud</option>
+                        <option value="VS">Valais</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Catégorie:</label>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id="cat_ville" checked="checked"> Ville</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id="cat_rural" checked="checked"> Rural</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="cat_montagne" checked="checked"> Montagne</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="minprix">Prix minimum [CHF]:</label>
+                    <input id="minprix" type="number" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="maxprix">Prix maximum [CHF]:</label>
+                    <input id="maxprix" type="number" value="1000">
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-sm btn-success">Chercher</button>
+                </div>
+            </div>
+            <div class="col-sm-4" style="background-color: #ddd;">
+                <p>Liste</p>
+            </div>
+            <div class="col-sm-5">
+                <!-- Colonne de droite: carte et détails -->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- DIV pour la carte, vide au début -->
+                        <div id="map" style="width: 100%; height: 300px;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="background-color: #ddd;">
+                        Détails
+                    </div>
+                </div>
+            </div>
+        </div> <!-- find de la ligne (row) -->
+        
+    </div>  <!-- fin du container -->
+
+</body>
+</html>
