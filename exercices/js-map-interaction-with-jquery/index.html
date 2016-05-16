@@ -1,8 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Géovisualisation dynamique et traitement de données</title>
+
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+
 <h1 id="exercice-interaction-avec-javascript-en-utilisant-jquery-et-leaflet">Exercice: Interaction avec Javascript en utilisant jQuery et Leaflet</h1>
 <p>L'objectif de cet exercice est de nous familiariser avec les possibilités d'interaction dans une application de Webmapping, à travers l'utilisation de Javascript.</p>
 <p>Dans le cadre de l'exercice, nous allons construire une petite application interactive pour trouver des hôtels de rêve, dont voici un brouillon de l'interface:</p>
 <div class="figure">
-<img src="figures/maquette.png" alt="Maquette de l&#39;application interactive" /><p class="caption">Maquette de l'application interactive</p>
+<img src="assets/img/maquette.png" alt="Maquette de l&#39;application interactive" /><p class="caption">Maquette de l'application interactive</p>
 </div>
 <p>L'application contient un titre sur la largeur de la page. Dessous, nous trouvons une mise en page en <strong>3 colonnes</strong>:</p>
 <ol style="list-style-type: decimal">
@@ -85,7 +102,7 @@ Cliquer ici
 <h2 id="le-dom-document-object-model">2. Le DOM: Document Object Model</h2>
 <p>Un fichier HTML contient l'ensemble de la structure hiérarchique d'une page Web, y compris contenu et formatage. Le navigateur Web charge le fichier HTML dans sa mémoire et produit la représentation graphique de la page Web. Par la suite, l'utilisateur peut avoir la <strong>possibilité d'interagir avec la page Web</strong>, p.ex. à travers des menus déroulants, boutons, etc. Nous avons vu que l'option sélectionné d'un menu déroulant, ou le texte contenu dans une boîte de texte figure déjà dans le code HTML. Cependant, le navigateur Web ne va naturellement pas modifier le fichier HTML de départ. Le navigateur Web modifie uniquement la représentation interne du code HTML pour refléter les changements sur la page. Cette représentation interne du code HTML à l'intérieur du navigateur Web est appelé le <strong>Document Object Model</strong>, ou tout cour le <strong>DOM</strong>. Le DOM actuel d'une page Web peut être visualisé en mode développement du navigateur Web:</p>
 <div class="figure">
-<img src="figures/browser-dom.png" alt="Le DOM dans le navigateur (exemple avec Google Chrome)" /><p class="caption">Le DOM dans le navigateur (exemple avec Google Chrome)</p>
+<img src="assets/img/browser-dom.png" alt="Le DOM dans le navigateur (exemple avec Google Chrome)" /><p class="caption">Le DOM dans le navigateur (exemple avec Google Chrome)</p>
 </div>
 <p>Pour simplifier, on peut dire qu'<strong>une interaction avec une page Web passe généralement par une modification à la volée du DOM.</strong> Afin de rendre interactif notre page Web, nous devons donc étudier les possibilités de modifier le DOM à l'aide de code Javascript. La libraire <a href="http://jquery.com">jQuery</a> permet, entre autres, de modifier le DOM de manière relativement facile.</p>
 <hr />
@@ -94,7 +111,7 @@ Cliquer ici
 <pre><code>mes_inputs = $(&#39;input&#39;);</code></pre>
 <p>La chaîne de caractère <code>'input'</code> est alors l'identificateur. Il est possible d'exécuter ce code dans la console Javascript d'un navigateur Web pour tester l'expression:</p>
 <div class="figure">
-<img src="figures/browser-console.png" alt="Sélection de l&#39;ensemble des balises input dans le navigateur" /><p class="caption">Sélection de l'ensemble des balises input dans le navigateur</p>
+<img src="assets/img/browser-console.png" alt="Sélection de l&#39;ensemble des balises input dans le navigateur" /><p class="caption">Sélection de l'ensemble des balises input dans le navigateur</p>
 </div>
 <p>Voici un aperçu de quelques identificateurs fréquents:</p>
 <ul>
@@ -529,3 +546,8 @@ map.setZoom(z);</code></pre>
 &lt;/div&gt;</code></pre>
 <p>où nous avons deux <code>div</code> imbriqués. Dans le <code>div</code> extérieur, nous appliquons deux styles CSS, le premier concerne la hauteur maximale (<code>max-height: 520px;</code>) et le deuxième l'affichage automatique du scrollbar (<code>overflow: auto;</code>).</p>
 <p>La première version de notre application choc sur les hôtels est désormais terminée. Nous pouvons donc procéder aux tests utilisateurs pour trouver les problèmes d'utilisation (bien entendu, il y en a...).</p>
+
+    </div>
+    <script src="assets/js/scale.fix.js"></script>
+  </body>
+</html>
