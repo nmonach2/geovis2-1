@@ -97,7 +97,7 @@ Cliquer ici
 
 <p>Il est à noter que le bouton n'exécute aucune action par défaut. L'action devra être définie dans le code Javascript.</p>
 <h3 id="style-des-éléments">Style des éléments</h3>
-<p><a href="http://getbootstrap.com">Bootstrap</a> définit toute une série de <strong><em>classes CSS</em></strong> pour donner une représentation familière aux différents éléments. Les filtres définies dans <a href="app-v1">app-v1</a> en font un usage extensif, d'où la présence de plusieurs éléments HTML (notamment des <code>div</code>, mais pas seulement) qui ne semblent à première vue pas nécessaires.</p>
+<p><a href="http://getbootstrap.com">Bootstrap</a> définit toute une série de <strong><em>classes CSS</em></strong> pour donner une représentation familière aux différents éléments. Les filtres définies dans <a href="app-v1/">app-v1</a> en font un usage extensif, d'où la présence de plusieurs éléments HTML (notamment des <code>div</code>, mais pas seulement) qui ne semblent à première vue pas nécessaires.</p>
 <hr />
 <h2 id="le-dom-document-object-model">2. Le DOM: Document Object Model</h2>
 <p>Un fichier HTML contient l'ensemble de la structure hiérarchique d'une page Web, y compris contenu et formatage. Le navigateur Web charge le fichier HTML dans sa mémoire et produit la représentation graphique de la page Web. Par la suite, l'utilisateur peut avoir la <strong>possibilité d'interagir avec la page Web</strong>, p.ex. à travers des menus déroulants, boutons, etc. Nous avons vu que l'option sélectionné d'un menu déroulant, ou le texte contenu dans une boîte de texte figure déjà dans le code HTML. Cependant, le navigateur Web ne va naturellement pas modifier le fichier HTML de départ. Le navigateur Web modifie uniquement la représentation interne du code HTML pour refléter les changements sur la page. Cette représentation interne du code HTML à l'intérieur du navigateur Web est appelé le <strong>Document Object Model</strong>, ou tout cour le <strong>DOM</strong>. Le DOM actuel d'une page Web peut être visualisé en mode développement du navigateur Web:</p>
@@ -124,7 +124,7 @@ Cliquer ici
 <p><strong>Changement du style</strong>: il est possible de modifier le style en utilisant la fonction <code>css</code>, p.ex.:</p>
 <pre><code>ds = $(&#39;.form-group&#39;);
 ds.css(&#39;background-color&#39;, &#39;#f00&#39;);</code></pre>
-<p>attribue la valeur <code>#f00</code> à la propriété CSS <code>background-color</code>. Vous pouvez essayer l'exemple sur l'exemple <a href="app-v1">app-v1</a>, dans la console Javascript. Le résultat n'est pas très beau... Pour revenir en arrière, il suffit de passer une valeur vide:</p>
+<p>attribue la valeur <code>#f00</code> à la propriété CSS <code>background-color</code>. Vous pouvez essayer l'exemple sur l'exemple <a href="app-v1/">app-v1</a>, dans la console Javascript. Le résultat n'est pas très beau... Pour revenir en arrière, il suffit de passer une valeur vide:</p>
 <pre><code>ds.css(&#39;background-color&#39;, &#39;&#39;);</code></pre>
 <p>Il est possible d'ajouter ou d'enlever une class CSS:</p>
 <pre><code>$(&#39;button&#39;).removeClass(&#39;btn-success&#39;);
@@ -160,18 +160,18 @@ colonneDuMilieu.html(&#39;&lt;h1&gt;Hôtels&lt;/h1&gt;&lt;p&gt;Liste de tous les
 <pre><code>function ouf(){
     alert(&#39;ouf!&#39;);    }
 $(&#39;.page-header&#39;).on(&#39;click&#39;, ouf);</code></pre>
-<p>Ce code «attache» la fonction <code>ouf</code> à l'événement <code>click</code> du <code>div</code> contenant le titre de la page. Si on exécute ce code dans la console du projet <a href="app-v1">app-v1</a>, et on clique par la suite sur le titre, la fonction <code>ouf</code> est exécutée à chaque fois.</p>
+<p>Ce code «attache» la fonction <code>ouf</code> à l'événement <code>click</code> du <code>div</code> contenant le titre de la page. Si on exécute ce code dans la console du projet <a href="app-v1/">app-v1</a>, et on clique par la suite sur le titre, la fonction <code>ouf</code> est exécutée à chaque fois.</p>
 <p>En plus, il est possible de retarder l'exécution d'une action, à l'aide de la fonction <code>setTimeout</code> qui prend la fonction à exécuter ainsi que le nombre de millisecondes à attendre:</p>
 <pre><code>function ouf(){
     alert(&#39;ouf!&#39;);    }
 function waitForOuf(){
     setTimeout(ouf, 2000);    }
 $(&#39;.page-header&#39;).on(&#39;click&#39;, waitForOuf);</code></pre>
-<p>Ces deux mécanismes sont responsables pour l'interactivité dans beaucoup de situations. Il y a par exemple un événement <code>ready</code> qui est déclenché par la page Web (le <code>document</code>) une fois que le DOM est construit et qu'il est possible d'interagir correctement avec le DOM à l'aide de fonctions Javascript. Le code Javascript du projet <a href="app-v1">app-v1</a> dans <a href="app-v1/script.js">script.js</a> utilise exactement ce mécanisme pour construire la carte sur la page. La carte est construite dans la fonction <code>buildMap</code>, qui est appelée depuis la fonction <code>main</code>. Cette fonction <code>main</code> quant à elle est exécutée automatiquement au moment ou la page Web est prête, ce qui est définie par l'instruction:</p>
+<p>Ces deux mécanismes sont responsables pour l'interactivité dans beaucoup de situations. Il y a par exemple un événement <code>ready</code> qui est déclenché par la page Web (le <code>document</code>) une fois que le DOM est construit et qu'il est possible d'interagir correctement avec le DOM à l'aide de fonctions Javascript. Le code Javascript du projet <a href="app-v1/">app-v1</a> dans <a href="app-v1/script.js">script.js</a> utilise exactement ce mécanisme pour construire la carte sur la page. La carte est construite dans la fonction <code>buildMap</code>, qui est appelée depuis la fonction <code>main</code>. Cette fonction <code>main</code> quant à elle est exécutée automatiquement au moment ou la page Web est prête, ce qui est définie par l'instruction:</p>
 <pre><code>$(document).on(&#39;ready&#39;, main);</code></pre>
 <p>La documentation jQuery contient la <a href="https://api.jquery.com/category/events/">liste de tous les événements</a>, avec une description.</p>
 <h3 id="exemple-lancer-le-filtre-des-hôtels">4.1 Exemple: lancer le filtre des hôtels</h3>
-<p>Pour montrer un court exemple d'un événement, nous illustrons ici comment le filtre des hôtels dans le projet <a href="app-v1">app-v1</a> peut être implémentée. A l'intérieur du <a href="app-v1/script.js">script.js</a>, dans la fonction <code>main</code>, nous pouvons attacher une fonction à l'événement ´click´ du bouton «Chercher»:</p>
+<p>Pour montrer un court exemple d'un événement, nous illustrons ici comment le filtre des hôtels dans le projet <a href="app-v1/">app-v1</a> peut être implémentée. A l'intérieur du <a href="app-v1/script.js">script.js</a>, dans la fonction <code>main</code>, nous pouvons attacher une fonction à l'événement ´click´ du bouton «Chercher»:</p>
 <pre><code>$(&#39;button&#39;).on(&#39;click&#39;, filtrerHotels);</code></pre>
 <p>Ceci nécessite évidemment de disposer d'une fonction <code>filtrerHotels</code>, ce qui n'est pas encore notre cas. Il suffit de la rajouter dans le fichier <a href="app-v1/script.js">script.js</a>:</p>
 <pre><code>function filtrerHotels(){
@@ -260,7 +260,7 @@ alert(&#39;2 - appel du fichier JSON terminé&#39;);</code></pre>
 <li>se rendre à l'URL <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> ce qui est l'adresse de notre serveur Web que nous venons de démarrer à l'étape précédente</li>
 </ol>
 <p>Il est bien évidemment aussi possible de faire tourner un serveur Web plus costaux, tel que <a href="http://www.wampserver.com">WAMP</a> sur Windows. Sur Mac OS X, le serveur Web <a href="https://httpd.apache.org">Apache</a> (utilisé par plus de 50% des sites Web) est déjà installé, il suffit de l'activer avec <code>sudo apachectl start</code> (il faut donner le mot de passe admin) et puis placer les fichiers dans <code>/Library/WebServer/Documents</code> avant de les accéder depuis le navigateur sous <code>http://localhost</code>.</p>
-<p>Nous pouvons maintenant insérer les différents hôtels dans la liste. Pour cela, nous devons faire une boucle à travers l'ensemble des hôtels, et construire le code HTML que nous pouvons insérer dans le <code>div</code> prévu pour la liste. La fonction <code>insererDonneesJson</code> du <a href="app-v2/script.js">script.js</a> du projet <a href="app-v2">app-v2</a> contient le code qui permet de le faire.</p>
+<p>Nous pouvons maintenant insérer les différents hôtels dans la liste. Pour cela, nous devons faire une boucle à travers l'ensemble des hôtels, et construire le code HTML que nous pouvons insérer dans le <code>div</code> prévu pour la liste. La fonction <code>insererDonneesJson</code> du <a href="app-v2/script.js">script.js</a> du projet <a href="app-v2/">app-v2</a> contient le code qui permet de le faire.</p>
 <h2 id="afficher-les-détails-de-lhôtel">6. Afficher les détails de l'hôtel</h2>
 <p>Nous avons actuellement la liste des hôtels qui s'affiche dans la liste. Cependant, nous aimerions encore afficher les détails pour chaque hôtel à droite sous la carte. Dans notre cas, nous allons afficher notamment la description de l'hôtel en plus.</p>
 <p>Avant d'écrire le code pour afficher ces détails, nous changeons un peu le style de la liste pour avoir un effet visuel sur le passage de la souris. Pour cela, nous modifions d'abord légèrement le code de la fonction <code>insererDonneesJson</code> pour définir une class CSS pour les différents <code>div</code> contenant les informations sur les hôtels. La nouvelle fonction se présente comme suit:</p>
@@ -332,7 +332,7 @@ h += &#39;&lt;p&gt;Description:&lt;br&gt;&#39;+hotel.description+&#39;&lt;/p&gt;
 h += &#39;&lt;p&gt;Prix: &#39;+hotel.prix+&#39; CHF&#39;;
 h += &#39;&lt;/div&gt;&#39;;
 $(&#39;#details&#39;).html(h);</code></pre>
-<p>L'application complète jusqu'à cette étape se trouve dans le dossier <a href="app-v3">app-v3</a>.</p>
+<p>L'application complète jusqu'à cette étape se trouve dans le dossier <a href="app-v3/">app-v3</a>.</p>
 <hr />
 <h2 id="hôtels-sur-la-carte">7. Hôtels sur la carte</h2>
 <p>Un problème évident pour le moment est que les hôtels ne sont pas présentes sur la carte. Ce n'est pas trop compliqué de rajouter un marqueur. Nous ajoutons le marqueur au moment où nous avons reçu les données du fichier JSON, dans la fonction <code>insererDonneesJson</code>:</p>
@@ -492,7 +492,7 @@ map.setZoom(z);</code></pre>
     map.setView([coords[1], coords[0]], z);
 
 }</code></pre>
-<p>Le code complet de l'application jusqu'à ce point est disponible dans <a href="app-v4">app-v4</a>.</p>
+<p>Le code complet de l'application jusqu'à ce point est disponible dans <a href="app-v4/">app-v4</a>.</p>
 <hr />
 <h2 id="filtrer-les-hôtels">9. Filtrer les hôtels</h2>
 <p>Nous filtrons maintenant la liste des hôtels en fonction des critères sélectionnés dans les options à gauche. Le filtrage est déclenché avec un clic sur le bouton <em>«Chercher»</em> à travers l'appel de la fonction <code>filtrerHotels</code>.</p>
@@ -537,7 +537,7 @@ map.setZoom(z);</code></pre>
     h.marker.setOpacity(0);
 }</code></pre>
 <p>Bien évidemment, les données des filtres doivent correspondre aux données des hôtels du fichier JSON. Sinon, le filtre arrête de fonctionner correctement. Si on teste le code ci-dessus, on peut constater que le filtre de la région ne fonctionne pas parce que les valeurs du menu déroulant contiennent &quot;VS&quot;, &quot;VD&quot; etc., tandis que le fichier JSON contient les noms complets. Nous ajustons donc le menu déroulant pour qu'il correspond aux valeurs du fichier JSON. Nous profitons aussi de cette occasion d'ajuster le contenu du menu.</p>
-<p>Le code final de la fonction <code>filtrerHotels</code> ainsi que le nouveau menu déroulant se trouvent dans <a href="app-v5">app-v5</a>.</p>
+<p>Le code final de la fonction <code>filtrerHotels</code> ainsi que le nouveau menu déroulant se trouvent dans <a href="app-v5/">app-v5</a>.</p>
 <p>Ce code final contient également une petite dernière modification: <strong>un scroll pour la liste des hôtels</strong>, pour éviter que la page devienne trop longue. Nous limitons la hauteur de la liste des hôtels à 520 pixels (valeur arbitraire), et s'il n'y a pas assez de place, un scrollbar ou similaire est affichée. Le code correspondant dans le fichier <code>index.html</code> est:</p>
 <pre><code>&lt;div style=&quot;max-height: 520px; overflow: auto;&quot; class=&quot;col-sm-4&quot;&gt;
     &lt;div id=&quot;hotels-liste&quot;&gt;

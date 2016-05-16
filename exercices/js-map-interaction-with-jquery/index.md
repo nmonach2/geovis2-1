@@ -141,7 +141,7 @@ Il est à noter que le bouton n'exécute aucune action par défaut. L'action dev
 
 ### Style des éléments
 
-[Bootstrap](http://getbootstrap.com) définit toute une série de ***classes CSS*** pour donner une représentation familière aux différents éléments. Les filtres définies dans [app-v1](app-v1) en font un usage extensif, d'où la présence de plusieurs éléments HTML (notamment des `div`, mais pas seulement) qui ne semblent à première vue pas nécessaires.
+[Bootstrap](http://getbootstrap.com) définit toute une série de ***classes CSS*** pour donner une représentation familière aux différents éléments. Les filtres définies dans [app-v1](app-v1/) en font un usage extensif, d'où la présence de plusieurs éléments HTML (notamment des `div`, mais pas seulement) qui ne semblent à première vue pas nécessaires.
 
 
 ---
@@ -181,7 +181,7 @@ Une fois un ou plusieurs éléments sélectionnés, il est possible d'effectuer 
     ds = $('.form-group');
     ds.css('background-color', '#f00');
 
-attribue la valeur `#f00` à la propriété CSS `background-color`. Vous pouvez essayer l'exemple sur l'exemple [app-v1](app-v1), dans la console Javascript. Le résultat n'est pas très beau... Pour revenir en arrière, il suffit de passer une valeur vide:
+attribue la valeur `#f00` à la propriété CSS `background-color`. Vous pouvez essayer l'exemple sur l'exemple [app-v1](app-v1/), dans la console Javascript. Le résultat n'est pas très beau... Pour revenir en arrière, il suffit de passer une valeur vide:
 
     ds.css('background-color', '');
 
@@ -233,7 +233,7 @@ Une action (fonction Javascript) peut être «attachée» à un de ces événeme
     	alert('ouf!');    }
     $('.page-header').on('click', ouf);
 
-Ce code «attache» la fonction `ouf` à l'événement `click` du `div` contenant le titre de la page. Si on exécute ce code dans la console du projet [app-v1](app-v1), et on clique par la suite sur le titre, la fonction `ouf` est exécutée à chaque fois.
+Ce code «attache» la fonction `ouf` à l'événement `click` du `div` contenant le titre de la page. Si on exécute ce code dans la console du projet [app-v1](app-v1/), et on clique par la suite sur le titre, la fonction `ouf` est exécutée à chaque fois.
 
 En plus, il est possible de retarder l'exécution d'une action, à l'aide de la fonction `setTimeout` qui prend la fonction à exécuter ainsi que le nombre de millisecondes à attendre:
 
@@ -243,7 +243,7 @@ En plus, il est possible de retarder l'exécution d'une action, à l'aide de la 
         setTimeout(ouf, 2000);    }
     $('.page-header').on('click', waitForOuf);
 
-Ces deux mécanismes sont responsables pour l'interactivité dans beaucoup de situations. Il y a par exemple un événement `ready` qui est déclenché par la page Web (le `document`) une fois que le DOM est construit et qu'il est possible d'interagir correctement avec le DOM à l'aide de fonctions Javascript. Le code Javascript du projet [app-v1](app-v1) dans [script.js](app-v1/script.js) utilise exactement ce mécanisme pour construire la carte sur la page. La carte est construite dans la fonction `buildMap`, qui est appelée depuis la fonction `main`. Cette fonction `main` quant à elle est exécutée automatiquement au moment ou la page Web est prête, ce qui est définie par l'instruction:
+Ces deux mécanismes sont responsables pour l'interactivité dans beaucoup de situations. Il y a par exemple un événement `ready` qui est déclenché par la page Web (le `document`) une fois que le DOM est construit et qu'il est possible d'interagir correctement avec le DOM à l'aide de fonctions Javascript. Le code Javascript du projet [app-v1](app-v1/) dans [script.js](app-v1/script.js) utilise exactement ce mécanisme pour construire la carte sur la page. La carte est construite dans la fonction `buildMap`, qui est appelée depuis la fonction `main`. Cette fonction `main` quant à elle est exécutée automatiquement au moment ou la page Web est prête, ce qui est définie par l'instruction:
 
     $(document).on('ready', main);
 
@@ -252,7 +252,7 @@ La documentation jQuery contient la [liste de tous les événements](https://api
 
 ### 4.1 Exemple: lancer le filtre des hôtels
 
-Pour montrer un court exemple d'un événement, nous illustrons ici comment le filtre des hôtels dans le projet [app-v1](app-v1) peut être implémentée. A l'intérieur du [script.js](app-v1/script.js), dans la fonction `main`, nous pouvons attacher une fonction à l'événement ´click´ du bouton «Chercher»:
+Pour montrer un court exemple d'un événement, nous illustrons ici comment le filtre des hôtels dans le projet [app-v1](app-v1/) peut être implémentée. A l'intérieur du [script.js](app-v1/script.js), dans la fonction `main`, nous pouvons attacher une fonction à l'événement ´click´ du bouton «Chercher»:
 
     $('button').on('click', filtrerHotels);
 
@@ -371,7 +371,7 @@ Le problème est que la fonction `$.getJSON` fonctionne uniquement à travers un
 
 Il est bien évidemment aussi possible de faire tourner un serveur Web plus costaux, tel que [WAMP](http://www.wampserver.com) sur Windows. Sur Mac OS X, le serveur Web [Apache](https://httpd.apache.org) (utilisé par plus de 50% des sites Web) est déjà installé, il suffit de l'activer avec `sudo apachectl start` (il faut donner le mot de passe admin) et puis placer les fichiers dans `/Library/WebServer/Documents` avant de les accéder depuis le navigateur sous `http://localhost`.
 
-Nous pouvons maintenant insérer les différents hôtels dans la liste. Pour cela, nous devons faire une boucle à travers l'ensemble des hôtels, et construire le code HTML que nous pouvons insérer dans le `div` prévu pour la liste. La fonction `insererDonneesJson` du [script.js](app-v2/script.js) du projet [app-v2](app-v2) contient le code qui permet de le faire.
+Nous pouvons maintenant insérer les différents hôtels dans la liste. Pour cela, nous devons faire une boucle à travers l'ensemble des hôtels, et construire le code HTML que nous pouvons insérer dans le `div` prévu pour la liste. La fonction `insererDonneesJson` du [script.js](app-v2/script.js) du projet [app-v2](app-v2/) contient le code qui permet de le faire.
 
 
 
@@ -471,7 +471,7 @@ Nous pouvons maintenant afficher les détails de l'hôtel. Pour cela, nous donno
     h += '</div>';
     $('#details').html(h);
 
-L'application complète jusqu'à cette étape se trouve dans le dossier [app-v3](app-v3).
+L'application complète jusqu'à cette étape se trouve dans le dossier [app-v3](app-v3/).
 
 
 ---
@@ -679,7 +679,7 @@ qui est l'instruction que nous retenons finalement dans la fonction `hotelZoom`:
     
     }
 
-Le code complet de l'application jusqu'à ce point est disponible dans [app-v4](app-v4).
+Le code complet de l'application jusqu'à ce point est disponible dans [app-v4](app-v4/).
 
 
 ---
@@ -748,7 +748,7 @@ Et finalement pour les trois catégories ville, rural et montagne (seulement le 
 
 Bien évidemment, les données des filtres doivent correspondre aux données des hôtels du fichier JSON. Sinon, le filtre arrête de fonctionner correctement. Si on teste le code ci-dessus, on peut constater que le filtre de la région ne fonctionne pas parce que les valeurs du menu déroulant contiennent "VS", "VD" etc., tandis que le fichier JSON contient les noms complets. Nous ajustons donc le menu déroulant pour qu'il correspond aux valeurs du fichier JSON. Nous profitons aussi de cette occasion d'ajuster le contenu du menu.
 
-Le code final de la fonction `filtrerHotels` ainsi que le nouveau menu déroulant se trouvent dans [app-v5](app-v5).
+Le code final de la fonction `filtrerHotels` ainsi que le nouveau menu déroulant se trouvent dans [app-v5](app-v5/).
 
 Ce code final contient également une petite dernière modification: **un scroll pour la liste des hôtels**, pour éviter que la page devienne trop longue. Nous limitons la hauteur de la liste des hôtels à 520 pixels (valeur arbitraire), et s'il n'y a pas assez de place, un scrollbar ou similaire est affichée. Le code correspondant dans le fichier `index.html` est:
 
