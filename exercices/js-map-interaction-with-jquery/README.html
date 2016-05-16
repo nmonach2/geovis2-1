@@ -1,0 +1,531 @@
+<h1 id="exercice-interaction-avec-javascript-en-utilisant-jquery-et-leaflet">Exercice: Interaction avec Javascript en utilisant jQuery et Leaflet</h1>
+<p>L'objectif de cet exercice est de nous familiariser avec les possibilités d'interaction dans une application de Webmapping, à travers l'utilisation de Javascript.</p>
+<p>Dans le cadre de l'exercice, nous allons construire une petite application interactive pour trouver des hôtels de rêve, dont voici un brouillon de l'interface:</p>
+<div class="figure">
+<img src="figures/maquette.png" alt="Maquette de l&#39;application interactive" /><p class="caption">Maquette de l'application interactive</p>
+</div>
+<p>L'application contient un titre sur la largeur de la page. Dessous, nous trouvons une mise en page en <strong>3 colonnes</strong>:</p>
+<ol style="list-style-type: decimal">
+<li><p>la colonne de gauche contient les <strong>options de recherche et filtres</strong>. On peut notamment appliquer des filtres par région, catégorie, et prix.</p></li>
+<li><p>la colonne du milieu contient la <strong>liste des hôtels</strong> correspondant à nos filtres.</p></li>
+<li><p>la colonne de droite contient <strong>en haut une carte</strong> avec la localisation des hôtels, et <strong>en bas les détails de l'hôtel sélectionné</strong>.</p></li>
+</ol>
+<hr />
+<h2 id="architecture-de-base">1. Architecture de base</h2>
+<p>L'application est construite à l'aide des libraires <a href="http://getbootstrap.com/">Bootstrap</a>, <a href="http://jquery.com/">jQuery</a> et <a href="http://leafletjs.com/">Leaflet</a>.</p>
+<p>Le dossier <a href="app-v1/">app-v1</a> contient une première ébauche de l'application. Le fichier <a href="app-v1/index.html">index.html</a> contient la structure, tandis que l'ensemble du code Javascript a été placé dans le fichier <a href="app-v1/script.js">script.js</a>.</p>
+<p>Au niveau des filtres, pour des fins d'illustration, nous avons un menu déroulant, des cases à cocher, des boîtes de texte (ou plutôt des «boîtes de chiffres») ainsi qu'un bouton pour déclencher les filtres. Voici les détails de ces différents éléments:</p>
+<h3 id="a.-menu-déroulant">a. Menu déroulant</h3>
+<p>Le menu déroulant est appelé un <code>select</code> en HTML, et on donne l'ensemble des options possible dans le code HTML. Voici un exemple de menu en HTML:</p>
+<pre><code>&lt;select id=&quot;region&quot;&gt;
+    &lt;option value=&quot;&quot;&gt;Aucune région choisie&lt;/option&gt;
+    &lt;option value=&quot;FR&quot;&gt;Fribourg&lt;/option&gt;
+    &lt;option value=&quot;GE&quot; selected&gt;Genève&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+<p>Le menu déroulant commence avec <code>&lt;select&gt;</code> et se termine avec <code>&lt;/select&gt;</code>. Entre deux, il y a toutes les options possibles entre des balises <code>&lt;option&gt;</code> et <code>&lt;/option&gt;</code>. L'attribut <code>value</code> associe une valeur à chaque option, valeur qui est utilisée uniquement «en interne», à l'intérieur du code; elle n'est pas visible pour l'utilisateur de l'application. Le texte entre les deux balises est quant à lui visible pour l'utilisateur, mais ne joue pas vraiment un rôle à l'intérieur du code. L'attribut <code>id</code> dans la balise <code>&lt;select&gt;</code> donne un identifiant au menu qui doit être unique à travers l'ensemble du code HTML. L'attribut ´selected´ à l'intérieur de l'option «Genève» définit l'élément sélectionné au départ.</p>
+<p>Voici le rendu du code ci-dessus: <select id="region"> <option value="">Aucune région choisie</option> <option value="FR">Fribourg</option> <option value="GE" selected>Genève</option> </select></p>
+<h3 id="b.-boutons-radio">b. Boutons radio</h3>
+<p>Les boutons radio sont une alternative au menu déroulant si le nombre d'options est limité. Tout comme pour le menu déroulant, il y a une seule option sélectionné. Voici l'exemple de menu déroulant présenté ci-dessus sous forme de boutons radios:</p>
+<p>
+<input type="radio" name="region" value=""> Aucune région choisie<br> <input type="radio" name="region" value="FR"> Fribourg<br> <input type="radio" name="region" value="GE" checked> Genève<br>
+</p>
+
+<p>Les boutons radio prennent un peu plus de place, mais l'utilisateur voit sur un coup d'oeil l'ensemble des options. Si la place le permet et le nombre d'option ne dépasse pas 6-7 éléments, les boutons radio sont généralement à favoriser.</p>
+<p>Voici le code de l'exemple ci-dessus:</p>
+<pre><code>&lt;p&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;region&quot; value=&quot;&quot;&gt; Aucune région choisie&lt;br&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;region&quot; value=&quot;FR&quot;&gt; Fribourg&lt;br&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;region&quot; value=&quot;GE&quot; checked&gt; Genève&lt;br&gt;
+&lt;/p&gt;</code></pre>
+<p>Le fait que les trois ´input´ possèdent le même nom (´region´) définit que ce sont des boutons radio associés et qu'il ne puisse y avoir qu'une seule sélection.</p>
+<h3 id="c.-cases-à-cocher-et-labels">c. Cases à cocher (et labels)</h3>
+<p>Si plus d'une option peut être choisie à la fois, on utilise des cases à cocher («checkboxes») à la place des boutons radio:</p>
+<p>
+<input type="checkbox" value="VD" checked> Vaud<br> <input type="checkbox" value="FR"> Fribourg<br> <input type="checkbox" value="GE" checked> Genève<br>
+</p>
+
+<p>Et voici le code:</p>
+<pre><code>&lt;p&gt;
+    &lt;input type=&quot;checkbox&quot; value=&quot;VD&quot; checked&gt; Vaud&lt;br&gt;
+    &lt;input type=&quot;checkbox&quot; value=&quot;FR&quot;&gt; Fribourg&lt;br&gt;
+    &lt;input type=&quot;checkbox&quot; value=&quot;GE&quot; checked&gt; Genève&lt;br&gt;
+&lt;/p&gt;</code></pre>
+<p>La seule différence notable par rapport aux boutons radio est le changement du type.</p>
+<p>Le seul problème que nous avons avec ces exemples de boutons radio et cases à cocher, que bon nombre d'utilisateurs aimeraient bien cliquer sur le texte correspondant pour sélectionner une des options. Pour l'instant, dans notre code, cette association n'est pas faite, le texte de l'option et la case à cocher ou le bouton radio sont des éléments indépendants au niveau du code. Pour ce changer, nous devons avoir recours à des <strong><em>labels</em></strong>. Il y a deux variantes possibles:</p>
+<ol style="list-style-type: decimal">
+<li><p>La première option est en utilisant un identifiant unique qui est définit dans l'attribut <code>id</code> de la balise <code>input</code> et qui est répété dans l'attribut ´for` de la balise ´label´:</p>
+<pre><code>&lt;input id=&quot;vd&quot; type=&quot;checkbox&quot; value=&quot;VD&quot;&gt; &lt;label for=&quot;vd&quot;&gt;Vaud&lt;/label&gt;</code></pre>
+<p>ce qui donne (essayez de cliquer sur le nom plutôt que la case à cocher):<br /> <input id="vd" type="checkbox" value="VD"> <label for="vd">Vaud</label></p></li>
+<li><p>La deuxième option est d'insérer la balise <code>input</code> directement à l'intérieur de la balise <code>label</code>:</p>
+<pre><code>&lt;label&gt;&lt;input type=&quot;checkbox&quot; value=&quot;VD&quot;&gt; Vaud&lt;/label&gt;</code></pre>
+<p>ce qui donne à l'écran la même chose:<br /><label><input type="checkbox" value="VD"> Vaud</label></p></li>
+</ol>
+<h3 id="boîtes-de-texte">Boîtes de texte</h3>
+<p>Une boîte de texte est simplement un ´input´ de type texte:</p>
+<pre><code>&lt;input type=&quot;text&quot; value=&quot;contenu&quot;&gt;</code></pre>
+<p>ce qui donne:<br /><input type="text" value="contenu"></p>
+<p>ou avec un label:</p>
+<pre><code>&lt;label&gt;Prix maximum: &lt;input type=&quot;text&quot; value=&quot;0&quot;&gt;&lt;/label&gt;</code></pre>
+<p>ce qui donne:<br /><label>Prix maximum: <input type="text" value="0"></label></p>
+<p>Si le texte ne peut être qu'un chiffre, il est possible de changer le type en <code>number</code>:</p>
+<p><label>Prix maximum: <input type="number" value="0"></label></p>
+<p>ce qui donne:<br /><label>Prix maximum: <input type="number" value="0"></label></p>
+<h3 id="boutons">Boutons</h3>
+<p>Un bouton peut être simplement inséré avec:</p>
+<pre><code>&lt;button&gt;Cliquer ici&lt;/button&gt;</code></pre>
+ci qui donne:
+<button>
+Cliquer ici
+</button>
+
+<p>Il est à noter que le bouton n'exécute aucune action par défaut. L'action devra être définie dans le code Javascript.</p>
+<h3 id="style-des-éléments">Style des éléments</h3>
+<p><a href="http://getbootstrap.com">Bootstrap</a> définit toute une série de <strong><em>classes CSS</em></strong> pour donner une représentation familière aux différents éléments. Les filtres définies dans <a href="app-v1">app-v1</a> en font un usage extensif, d'où la présence de plusieurs éléments HTML (notamment des <code>div</code>, mais pas seulement) qui ne semblent à première vue pas nécessaires.</p>
+<hr />
+<h2 id="le-dom-document-object-model">2. Le DOM: Document Object Model</h2>
+<p>Un fichier HTML contient l'ensemble de la structure hiérarchique d'une page Web, y compris contenu et formatage. Le navigateur Web charge le fichier HTML dans sa mémoire et produit la représentation graphique de la page Web. Par la suite, l'utilisateur peut avoir la <strong>possibilité d'interagir avec la page Web</strong>, p.ex. à travers des menus déroulants, boutons, etc. Nous avons vu que l'option sélectionné d'un menu déroulant, ou le texte contenu dans une boîte de texte figure déjà dans le code HTML. Cependant, le navigateur Web ne va naturellement pas modifier le fichier HTML de départ. Le navigateur Web modifie uniquement la représentation interne du code HTML pour refléter les changements sur la page. Cette représentation interne du code HTML à l'intérieur du navigateur Web est appelé le <strong>Document Object Model</strong>, ou tout cour le <strong>DOM</strong>. Le DOM actuel d'une page Web peut être visualisé en mode développement du navigateur Web:</p>
+<div class="figure">
+<img src="figures/browser-dom.png" alt="Le DOM dans le navigateur (exemple avec Google Chrome)" /><p class="caption">Le DOM dans le navigateur (exemple avec Google Chrome)</p>
+</div>
+<p>Pour simplifier, on peut dire qu'<strong>une interaction avec une page Web passe généralement par une modification à la volée du DOM.</strong> Afin de rendre interactif notre page Web, nous devons donc étudier les possibilités de modifier le DOM à l'aide de code Javascript. La libraire <a href="http://jquery.com">jQuery</a> permet, entre autres, de modifier le DOM de manière relativement facile.</p>
+<hr />
+<h2 id="jquery-et-le-dom">3. jQuery et le DOM</h2>
+<p>La première tâche de jQuery est généralement de <code>sélectionner</code> à l'aide de code Javascript un élément particulier sur la page Web, afin d'effectuer une manipulation sur l'élément sélectionné. La sélection d'un élément se fait à l'aide de la fonction jQuery <code>$</code> (c'est le nom de la fonction, tout comme p.ex. <code>main</code>, <code>alert</code>, etc.), suivi de ce qu'on appelle un <strong>identificateur</strong> d'élément. jQuery nous retournera l'ensemble des éléments qui correspondent à l'identificateur donné. Nous pouvons sélectionner par exemple l'ensemble des balises <code>input</code> à l'aide du code suivant (le résultat est attribué à la variable <code>mes_inputs</code>):</p>
+<pre><code>mes_inputs = $(&#39;input&#39;);</code></pre>
+<p>La chaîne de caractère <code>'input'</code> est alors l'identificateur. Il est possible d'exécuter ce code dans la console Javascript d'un navigateur Web pour tester l'expression:</p>
+<div class="figure">
+<img src="figures/browser-console.png" alt="Sélection de l&#39;ensemble des balises input dans le navigateur" /><p class="caption">Sélection de l'ensemble des balises input dans le navigateur</p>
+</div>
+<p>Voici un aperçu de quelques identificateurs fréquents:</p>
+<ul>
+<li><code>$('input')</code> sélectionne toutes les balises <code>input</code></li>
+<li><code>$('#region')</code> sélectionne tous les éléments dont l'attribut <code>id</code> contient la valeur <code>region</code> (notez que le dièse ne fait pas partie de l'ID, mais de l'identificateur jQuery)</li>
+<li><code>$('.form-group)</code> sélectionne tous les éléments dont l'attribut <code>class</code> contient la valeur <code>form-group</code>. L'attribut <code>class</code> contient la <strong>classe CSS</strong> d'un élément. Il est à noter qu'un élément peut avoir plusieurs classes CSS en même temps; elles sont alors séparées par des espaces (un nom de classe ne peut pas contenir d'espace).</li>
+<li><code>$('[name=region]')</code> sélectionne l'ensemble des éléments dont l'attribut <code>name</code> est égal à <code>region</code>.</li>
+</ul>
+<p>Une fois un ou plusieurs éléments sélectionnés, il est possible d'effectuer des manipulations diverses, interroger les valeurs des attributs, modifier le contenu etc. Ci-dessous quelques exemples.</p>
+<p><strong>Changement du style</strong>: il est possible de modifier le style en utilisant la fonction <code>css</code>, p.ex.:</p>
+<pre><code>ds = $(&#39;.form-group&#39;);
+ds.css(&#39;background-color&#39;, &#39;#f00&#39;);</code></pre>
+<p>attribue la valeur <code>#f00</code> à la propriété CSS <code>background-color</code>. Vous pouvez essayer l'exemple sur l'exemple <a href="app-v1">app-v1</a>, dans la console Javascript. Le résultat n'est pas très beau... Pour revenir en arrière, il suffit de passer une valeur vide:</p>
+<pre><code>ds.css(&#39;background-color&#39;, &#39;&#39;);</code></pre>
+<p>Il est possible d'ajouter ou d'enlever une class CSS:</p>
+<pre><code>$(&#39;button&#39;).removeClass(&#39;btn-success&#39;);
+$(&#39;button&#39;).addClass(&#39;btn-primary&#39;);</code></pre>
+<p>Ou encore, en une seule instruction:</p>
+<pre><code>$(&#39;.col-sm-3&#39;).addClass(&#39;col-sm-2&#39;).removeClass(&#39;col-sm-3&#39;)</code></pre>
+<p>ce qui permet de redimensionner des colonnes à la volée...</p>
+<p>Cette méthode permet de modifier très facilement l'apparence d'un ou plusieurs éléments.</p>
+<p>Nous pouvons également modifier le contenu d'un élément:</p>
+<pre><code>colonneDuMilieu = $(&#39;.col-sm-4&#39;);
+colonneDuMilieu.html(&#39;&lt;h1&gt;Hôtels&lt;/h1&gt;&lt;p&gt;Liste de tous les hôtels...&lt;/p&gt;&#39;);</code></pre>
+<p>Nous pouvons donc modifier l'ensemble du contenu de la page Web avec quelques manipulations relativement simples...</p>
+<hr />
+<h2 id="événements">4. Événements</h2>
+<p>Les événements sont un élément clé pour l'interactivité sur une page Web. En effet, ce sont les déclencheurs de nos actions, elles permettent de lancer un code Javascript. Le nombre d'événements possibles est grand, et nous allons regarder ici juste quelques-uns. Parmi les événements les plus fréquents, on trouve (avec les noms des événements entre parenthèses):</p>
+<ul>
+<li>un clic de souris (<code>click</code>)</li>
+<li>l'entrée de la souris dans un élément HTML (<code>mousenter</code>)</li>
+<li>la sortie de la souris dans un élément HTML (<code>mouseout</code>)</li>
+<li>le changement de statut d'un menu déroulant, d'une case à cocher, d'un bouton radio, etc. (<code>change</code>)</li>
+<li>le changement du contenu d'un champ texte (<code>change</code>)</li>
+<li>le clic sur un bouton (<code>click</code>)</li>
+<li>le scroll (<code>scroll</code>)</li>
+<li>le mouvement de la souris (<code>mousemove</code>)</li>
+</ul>
+<p>et aussi, d'un style un peu différent:</p>
+<ul>
+<li>la fin de la chargement de la page HTML par le navigateur (<code>load</code>)</li>
+<li>la fin de la construction du DOM par le navgiateur (<code>ready</code>)</li>
+<li>le changement de la taille de la fenêtre (<code>resize</code>)</li>
+</ul>
+<p>Une action (fonction Javascript) peut être «attachée» à un de ces événements, à l'aide de la fonction jQuery <code>on</code> avec comme arguments le nom de l'événement et la fonction à exécuter. Regardons ce code comme exemple:</p>
+<pre><code>function ouf(){
+    alert(&#39;ouf!&#39;);    }
+$(&#39;.page-header&#39;).on(&#39;click&#39;, ouf);</code></pre>
+<p>Ce code «attache» la fonction <code>ouf</code> à l'événement <code>click</code> du <code>div</code> contenant le titre de la page. Si on exécute ce code dans la console du projet <a href="app-v1">app-v1</a>, et on clique par la suite sur le titre, la fonction <code>ouf</code> est exécutée à chaque fois.</p>
+<p>En plus, il est possible de retarder l'exécution d'une action, à l'aide de la fonction <code>setTimeout</code> qui prend la fonction à exécuter ainsi que le nombre de millisecondes à attendre:</p>
+<pre><code>function ouf(){
+    alert(&#39;ouf!&#39;);    }
+function waitForOuf(){
+    setTimeout(ouf, 2000);    }
+$(&#39;.page-header&#39;).on(&#39;click&#39;, waitForOuf);</code></pre>
+<p>Ces deux mécanismes sont responsables pour l'interactivité dans beaucoup de situations. Il y a par exemple un événement <code>ready</code> qui est déclenché par la page Web (le <code>document</code>) une fois que le DOM est construit et qu'il est possible d'interagir correctement avec le DOM à l'aide de fonctions Javascript. Le code Javascript du projet <a href="app-v1">app-v1</a> dans <a href="app-v1/script.js">script.js</a> utilise exactement ce mécanisme pour construire la carte sur la page. La carte est construite dans la fonction <code>buildMap</code>, qui est appelée depuis la fonction <code>main</code>. Cette fonction <code>main</code> quant à elle est exécutée automatiquement au moment ou la page Web est prête, ce qui est définie par l'instruction:</p>
+<pre><code>$(document).on(&#39;ready&#39;, main);</code></pre>
+<p>La documentation jQuery contient la <a href="https://api.jquery.com/category/events/">liste de tous les événements</a>, avec une description.</p>
+<h3 id="exemple-lancer-le-filtre-des-hôtels">4.1 Exemple: lancer le filtre des hôtels</h3>
+<p>Pour montrer un court exemple d'un événement, nous illustrons ici comment le filtre des hôtels dans le projet <a href="app-v1">app-v1</a> peut être implémentée. A l'intérieur du <a href="app-v1/script.js">script.js</a>, dans la fonction <code>main</code>, nous pouvons attacher une fonction à l'événement ´click´ du bouton «Chercher»:</p>
+<pre><code>$(&#39;button&#39;).on(&#39;click&#39;, filtrerHotels);</code></pre>
+<p>Ceci nécessite évidemment de disposer d'une fonction <code>filtrerHotels</code>, ce qui n'est pas encore notre cas. Il suffit de la rajouter dans le fichier <a href="app-v1/script.js">script.js</a>:</p>
+<pre><code>function filtrerHotels(){
+    // suite du code ici..    }</code></pre>
+<p>En insérant une instruction <code>console.log('filtrerHotels')</code> on peut vérifier si la fonction est bel et bien exécutée après un clic sur le bouton. Toujours utile de savoir si on a tout fait juste jusqu'à maintenant... <code>console.log</code> écrit le contenu donné dans la console Javascript, qui est invisible pour l'utilisateur moyen. On peut aussi y écrire des variables pour vérifier si elle contient une valeur attendue ou non. Très utile pour trouver les nombreuses erreurs.</p>
+<p>Par la suite, dans la fonction <code>filtrerHotels</code>, il faut récupérer les valeurs des différents champs (région, catégorie, prix minimum et maximum). Là aussi, jQuery est d'une grande utilité, surtout la fonction <code>val</code> qui permet de récupérer la valeur actuelle:</p>
+<pre><code>function filtrerHotels(){
+    var region = $(&#39;#region&#39;).val();
+    var minprix = parseInt($(&#39;#minprix&#39;).val());
+    var maxprix = parseInt($(&#39;#maxprix&#39;).val());
+    var cat_ville = $(&#39;#cat_ville&#39;)[0].checked;
+    var cat_rural = $(&#39;#cat_rural&#39;)[0].checked;
+    var cat_montagne = $(&#39;#cat_montagne&#39;)[0].checked;
+
+    // contrôler le contenu des variables p.ex. comme ça:
+    console.log( [region, minprix, maxprix, cat_ville, cat_rural, cat_montagne] );
+    
+    // suite du filtre...
+}</code></pre>
+<p>La fonction <code>parseInt</code> permet de transformer une chaîne de caractères en nombre entier. La vérification si les cases à cocher sont cochées ou non est un peu différentes, mais nous renseigne simplement si une case à cocher précise est cochée (<code>true</code>) ou non (<code>false</code>). Par la suite, on peut afficher les hôtels correspondants à ces critères, et cacher les autres. Au moins, si on avait une liste d'hôtels... Cacher un élément n'est pas le problème:</p>
+<pre><code>$(&#39;.col-sm-4&#39;).addClass(&#39;hide&#39;);</code></pre>
+<p>... fait efficacement disparaître une des colonnes, et ...</p>
+<pre><code>$(&#39;.col-sm-4&#39;).removeClass(&#39;hide&#39;);</code></pre>
+<p>... permet de la récupérer à nouveau. <code>hide</code> est par ailleurs une classe CSS qui est définie par Bootstrap.</p>
+<h2 id="récupérer-des-données-json-avec-javascript">5. Récupérer des données JSON avec Javascript</h2>
+<p>Nous allons récupérer les données sur les hôtels depuis un fichier externe qui est en format JSON. Ce fichier peut provenir ou non d'une base de données. Le format JSON permet d'enregistrer des données d'une manière qui est relativement facile à comprendre par l'humain et l'ordinateur, ce qui s'avère très pratique. Un fichier JSON est composé de dictionnaires, arrays, nombre entiers et décimales, et des chaînes de caractères, très similaire à ce que pourrait être un bout de code Javascript. Voici un exemple simple:</p>
+<pre><code>{
+    &quot;nom&quot;: &quot;Einstein&quot;,
+    &quot;prénom&quot;: &quot;Albert&quot;,
+    &quot;naissance&quot;: 1879,
+    &quot;deces&quot;: 1955,
+    &quot;publications&quot;: [
+        {&quot;title&quot;: &quot;E=mc2&quot;, &quot;year&quot;: 1905},
+        {&quot;title&quot;: &quot;Newton&#39;s apple&quot;, &quot;year&quot;: 1906},
+        {&quot;title&quot;: &quot;Schroedinger&#39;s cat&quot;, &quot;year&quot;: 1907}
+    ]
+}</code></pre>
+<p>Les espaces et retours à la ligne ne sont pas nécessaires, mais facilitent évidemment la lecture du fichier.</p>
+<p>Il est possible de représenter par exemple un fichier ESRI Shape sous forme de JSON; le nom du format est alors GeoJSON. Voici un exemple d'un tel fichier:</p>
+<pre><code>{
+    &quot;type&quot;: &quot;FeatureCollection&quot;,                                  
+    &quot;features&quot;: [
+        {
+            &quot;type&quot;: &quot;Feature&quot;,
+            &quot;properties&quot;: { &quot;id&quot;: 1, &quot;name&quot;: &quot;Bern&quot; }, 
+            &quot;geometry&quot;: { &quot;type&quot;: &quot;Point&quot;, &quot;coordinates&quot;: [ 7.45, 46.96 ] }
+        }, { 
+            &quot;type&quot;: &quot;Feature&quot;, 
+            &quot;properties&quot;: { &quot;id&quot;: 2, &quot;name&quot;: &quot;Basel&quot; }, 
+            &quot;geometry&quot;: { &quot;type&quot;: &quot;Point&quot;, &quot;coordinates&quot;: [ 7.60, 47.56 ] }
+        }, { 
+            &quot;type&quot;: &quot;Feature&quot;, 
+            &quot;properties&quot;: { &quot;id&quot;: 3, &quot;name&quot;: &quot;Lausanne&quot; }, 
+            &quot;geometry&quot;: { &quot;type&quot;: &quot;Point&quot;, &quot;coordinates&quot;: [ 6.60, 46.53 ] }
+        }
+    ]
+}</code></pre>
+<p>Un fichier GeoJSON peut être généré avec QGIS depuis un fichier Shape, ce qui est intéressant pour le lire par la suite dans notre application Web.</p>
+<p>Bien évidemment, il est possible de définir notre propre fichier JSON qui contient les informations nécessaires pour notre projet.</p>
+<p>La lecture d'un fichier JSON dans une application Web peut se faire facilement avec jQuery:</p>
+<pre><code>$.getJSON( url, callback_function );</code></pre>
+<p>où <code>callback_function</code> est une fonction que nous avons défini auparavant et qui reçoit le contenu du fichier JSON. C'est à l'intérieur de cette fonction que nous pourrons faire utilisation de ces données. Un aspect important qui porte souvent à confusion est l'ordre d'exécution. Considérons par exemple le code suivant:</p>
+<pre><code>function insererDonneesJson(data) {
+    alert(&#39;1 - insérer les données du fichier JSON&#39;);
+}
+
+$.getJSON(&#39;hotels.json&#39;, insererDonneesJson);
+alert(&#39;2 - appel du fichier JSON terminé&#39;);</code></pre>
+<p>La fonction <code>$.getJSON</code> demande un fichier JSON depuis le Web, et puis il est censé appeler avec le contenu la fonction <code>insererDonneesJson</code>. Cette fonction affiche simplement une boîte d'alerte. Et après la demande du fichier JSON, une autre boîte d'alerte est affichée à l'écran. Il peut être surprenant d'apprendre que généralement l'alerte '1 - insérer les données...' s'affiche après l'alerte '2 - appel du fichier ...'. Il est probablement encore plus surprenant d'apprendre qu'en fait, l'ordre d'exécution n'est simplement pas défini! Le problème vient du fait que <strong>demander un fichier depuis le Web prend du temps</strong>, beaucoup de temps à l'échelle de la vitesse d'exécution d'un programme informatique. Du coup, au lieu d'attendre une éternité informatique pour que le fichier arrive, l'ordinateur continue simplement à exécuter la suite du script. Ce qui est tout à fait ok vu que nous avons fourni une fonction qui sera exécuté automatiquement une fois que le fichier est arrivé, c'est-à-dire après une éternité...</p>
+<p>Avec ces connaissances, nous pouvons maintenant demander les données sur les hôtels à insérer, et les insérer dans la liste. Nous pouvons par exemple insérer la ligne</p>
+<pre><code>$.getJSON(&#39;hotels.json&#39;, insererDonneesJson);</code></pre>
+<p>à la fin de la fonction <code>main</code>, et insérer la fonction <code>insererDonnesJson</code> un peu plus bas:</p>
+<pre><code>function insererDonneesJson(data){
+    console.log(data);
+}</code></pre>
+<p>Si on recharge maintenant notre application, on sera déçu car ça ne fonctionne généralement pas. Dans Google Chrome, nous aurons une erreur mystérieuse dans la console:</p>
+<p style="margin: 0 20px; color: #f00;">
+<i>XMLHttpRequest cannot load file:///Users/.../hotels.json. Cross origin requests are only supported for protocol schemes: http, data, chrome, chrome-extension, https, chrome-extension-resource.</i>
+</p>
+
+<p>Le problème est que la fonction <code>$.getJSON</code> fonctionne uniquement à travers un serveur Web, et nous n'avons pour l'heure pas de serveur... Le plus simple est: faire tourner un serveur Web. Pour cela, il y a de nombreuses options. Une des solutions les plus simples est d'exécuter le serveur Web intégré dans Python:</p>
+<ol style="list-style-type: decimal">
+<li>ouvrir le Terminal</li>
+<li><code>cd dossier/avec/fichiers/html/et/json</code></li>
+<li>taper <code>python -m SimpleHTTPServer</code> (ou si nous utilisons Python 3: <code>python3 -m http.server</code>)</li>
+<li>se rendre à l'URL <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> ce qui est l'adresse de notre serveur Web que nous venons de démarrer à l'étape précédente</li>
+</ol>
+<p>Il est bien évidemment aussi possible de faire tourner un serveur Web plus costaux, tel que <a href="http://www.wampserver.com">WAMP</a> sur Windows. Sur Mac OS X, le serveur Web <a href="https://httpd.apache.org">Apache</a> (utilisé par plus de 50% des sites Web) est déjà installé, il suffit de l'activer avec <code>sudo apachectl start</code> (il faut donner le mot de passe admin) et puis placer les fichiers dans <code>/Library/WebServer/Documents</code> avant de les accéder depuis le navigateur sous <code>http://localhost</code>.</p>
+<p>Nous pouvons maintenant insérer les différents hôtels dans la liste. Pour cela, nous devons faire une boucle à travers l'ensemble des hôtels, et construire le code HTML que nous pouvons insérer dans le <code>div</code> prévu pour la liste. La fonction <code>insererDonneesJson</code> du <a href="app-v2/script.js">script.js</a> du projet <a href="app-v2">app-v2</a> contient le code qui permet de le faire.</p>
+<h2 id="afficher-les-détails-de-lhôtel">6. Afficher les détails de l'hôtel</h2>
+<p>Nous avons actuellement la liste des hôtels qui s'affiche dans la liste. Cependant, nous aimerions encore afficher les détails pour chaque hôtel à droite sous la carte. Dans notre cas, nous allons afficher notamment la description de l'hôtel en plus.</p>
+<p>Avant d'écrire le code pour afficher ces détails, nous changeons un peu le style de la liste pour avoir un effet visuel sur le passage de la souris. Pour cela, nous modifions d'abord légèrement le code de la fonction <code>insererDonneesJson</code> pour définir une class CSS pour les différents <code>div</code> contenant les informations sur les hôtels. La nouvelle fonction se présente comme suit:</p>
+<pre><code> 1  function insererDonneesJson(data){
+ 2      hotels = data;  // garder les hotels en mémoire
+ 3      var html = &#39;&#39;;
+ 4      for (var i=0; i &lt; hotels.features.length; i++){
+ 5          var h = hotels.features[i];
+ 6          html += &#39;&lt;div class=&quot;hoteldiv&quot; id=&quot;hotel-div-&#39;+h.properties.id+&#39;&quot;&gt;&#39;;
+ 7          html +=     &#39;&lt;h3&gt;&#39;+h.properties.name+&#39;&lt;/h3&gt;&#39;;
+ 8          html +=     &#39;&lt;p&gt;Catégorie: &#39;+h.properties.categorie+&#39;&lt;/p&gt;&#39;;
+ 9          html +=     &#39;&lt;p&gt;Prix: &#39;+h.properties.prix+&#39; CHF&lt;/p&gt;&#39;;
+10          html += &#39;&lt;/div&gt;&#39;;
+11      }
+12      // insérer dans la liste
+13      $(&#39;#hotels-liste&#39;).html(html);
+14  }</code></pre>
+<p>Le changement concerne la ligne 6 du script. Nous avons ajouté la class CSS <code>hoteldiv</code> pour chaque containeur d'un hôtel. A noter aussi que l'ancienne ligne 11 <code>html += '&lt;hr&gt;';</code> a été supprimée.</p>
+<p>Nous pouvons également créer un fichier <code>style.css</code> pour y mettre nos classes CSS. Nous devons inclure ce fichier dans le <code>head</code> de notre fichier <code>index.html</code>:</p>
+<pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;</code></pre>
+<p>Voici un exemple de classe CSS pour la liste des hôtels:</p>
+<pre><code>.hoteldiv {
+  padding: 2px 10px 5px 15px;
+  border: 1px solid #eee;
+}
+
+.hoteldiv:hover {
+  background-color: #f0f0f0;
+}</code></pre>
+<p>Nous pouvons désormais <strong>ajouter l'événement Javascript <code>mouseover</code></strong> qui déclenche l'affichage des détails de l'hôtel actuel. Il suffit de rajouter la ligne suivante à la fin de la fonction <code>insererDonneesJson</code>:</p>
+<pre><code>$(&#39;.hoteldiv&#39;).on(&#39;mouseover&#39;, showHotelsDetails);</code></pre>
+<p>... et il faut encore écrire la fonction <code>showHotelsDetails</code>... Nous commençons par écrire une fonction vide:</p>
+<pre><code>function showHotelsDetails(evt){
+    // la suite ici
+}</code></pre>
+<p>Cette fonction prend un argument <code>evt</code> (évidemment vous l'appelez comme vous voulez) qui représente l'événement Javascript. Nous avons besoin de cet événement pour trouver l'identifiant du <code>div</code> qui à son tour nous permet de savoir de quel hôtel il s'agit. Pour cela il faut comprendre que les informations détaillées sur les hôtels se trouvent toujours dans la variable <code>hotels</code> qui a été créée sur la première ligne de la fonction <code>insererDonneesJson</code> et qui contient la <code>FeatureCollection</code> (c'est-à-dire grosso modo le fichier Shape). Nous devons chercher les informations détaillées dans cette variable, et pour cela nous devons connaître l'identifiant interne de l'hôtel qui se trouve dans l'<code>id</code> du <code>div</code> de l'hôtel. Alors comment extraire cet <code>id</code> de l'événement Javascript? Voici les étapes:</p>
+<ol style="list-style-type: lower-alpha">
+<li>la variable <code>evt.target</code> contient l'élément HTML qui se trouve sous la souris. Ça peut être le <code>div</code> lui-même, ou n'importe quel élément HTML à l'intérieur du <code>div</code>, donc par exemple le <code>h3</code> avec le nom de l'hôtel.</li>
+<li>nous regardons si notre <code>evt.target</code> contient la classe CSS <code>hoteldiv</code>. C'est une façon simple de savoir si l'élément HTML que nous avons est le <code>div</code> de l'hôtel, ou un des éléments à l'intérieur. Nous pouvons faire ceci avec <code>$(evt.target).hasClass('hoteldiv')</code>.</li>
+<li>si notre «target» n'est pas le <code>div</code> de l'hôtel, nous devons le trouver. Ceci peut se faire grâce à la fonction jQuery de recherche de parents (les parents sont tous les éléments HTML à l'extérieur de l'élément actuel; un élément HTML à l'intérieur serait dans cette terminologie un enfant). Plus spécifiquement, nous cherchons un parent qui a comme class CSS <code>hoteldiv</code>, ce qui se présente comme suit: $(evt.target).parents('.hoteldiv').</li>
+</ol>
+<p>Nous pouvons extraire l'<code>id</code> du <code>div</code> de l'hôtel avec le code suivant:</p>
+<pre><code>function showHotelsDetails(evt){
+    var divId = $(evt.target).attr(&#39;id&#39;);
+    if ($(evt.target).hasClass(&#39;hoteldiv&#39;) == false){
+        divId = $(evt.target).parents(&#39;.hoteldiv&#39;).attr(&#39;id&#39;);
+    }
+    // contrôle du fonctionnement:
+    console.log(divId);
+}</code></pre>
+<p>Il est une bonne pratique de tester en permanence l'avancement de notre projet en écrivant des valeurs dans notre console Javascript. Si nous exécutons notre application et passons avec la souris sur la liste des hôtels, la console Javascript doit contenir les identifiants des <code>div</code>.</p>
+<p>L'identifiant de l'hôtel est uniquement la dernière partie de l'identifiant du <code>div</code>, c'est-à-dire le chiffre à la fin. Nous pouvons extraire cette valeur en remplaçant &quot;hotel-div-&quot; par rien:</p>
+<pre><code>var hotelId = divId.replace(&quot;hotel-div-&quot;, &quot;&quot;);</code></pre>
+<p>Il y a ici comme souvent d'autres manières de faire la même chose. Une des alternatives est d'extraire une partie de la chaîne de caractère, c'est-à-dire la partie qui commence à partir du caractère 11 (=index 10):</p>
+<pre><code>var hotelId = divId.substr(10);</code></pre>
+<p>Il est maintenant temps de chercher l'hôtel avec cet identifiant dans la variable <code>hotels</code>. Pour cela, nous utilisons une méthode un peu rudimentaire: regarder un hôtel après l'autre pour voir si l'identifiant correspond. Et si c'est le cas, on mémorise cet identifiant. Ça peut paraître très inefficace de chercher dans l'ensemble de la liste des hôtels, surtout si nous avions 10'000 hôtels. Cependant, il s'avère qu'un téléphone mobile est en mesure d'exécuter environ 1.4 milliard d'instructions par seconde (à peu près 1500 fois plus rapide qu'un <a href="http://fr.wikipedia.org/wiki/Commodore_64">Commodore 64 de 1982</a>), ce qui est amplément suffisant pour chercher dans la liste entière de quelques hôtels... Un ordinateur est à peu près 2 fois plus vite que le téléphone. Voici le code qui passe à travers l'ensemble des hôtels pour trouver l'hôtel avec l'identifiant cherché:</p>
+<pre><code>var hotel = null;
+for (var i=0; i &lt; hotels.features.length; i++){
+    if (hotels.features[i].properties.id == hotelId){
+        hotel = hotels.features[i];
+    }
+}</code></pre>
+<p>Nous pouvons maintenant afficher les détails de l'hôtel. Pour cela, nous donnons un identifiant <code>id=&quot;details&quot;</code> au <code>div</code> qui contiendra ces détails. Par la suite, voici un exemple de code qui permet d'afficher l'ensemble des informations disponibles sur un hôtel:</p>
+<pre><code>var h = &#39;&lt;div id=&quot;hotel-details-&#39;+hotel.id+&#39;&quot;&gt;&#39;;
+h += &#39;&lt;h3&gt;&#39;+hotel.name+&#39;&lt;/h3&gt;&#39;;
+h += &#39;&lt;p&gt;Catégorie: &#39;+hotel.categorie+&#39;&lt;/p&gt;&#39;;
+h += &#39;&lt;p&gt;Région: &#39;+hotel.region+&#39;&lt;/p&gt;&#39;;
+h += &#39;&lt;p&gt;Description:&lt;br&gt;&#39;+hotel.description+&#39;&lt;/p&gt;&#39;;
+h += &#39;&lt;p&gt;Prix: &#39;+hotel.prix+&#39; CHF&#39;;
+h += &#39;&lt;/div&gt;&#39;;
+$(&#39;#details&#39;).html(h);</code></pre>
+<p>L'application complète jusqu'à cette étape se trouve dans le dossier <a href="app-v3">app-v3</a>.</p>
+<hr />
+<h2 id="hôtels-sur-la-carte">7. Hôtels sur la carte</h2>
+<p>Un problème évident pour le moment est que les hôtels ne sont pas présentes sur la carte. Ce n'est pas trop compliqué de rajouter un marqueur. Nous ajoutons le marqueur au moment où nous avons reçu les données du fichier JSON, dans la fonction <code>insererDonneesJson</code>:</p>
+<pre><code>for (var i=0; i &lt; hotels.features.length; i++){
+    var coords = hotels.features[i].geometry.coordinates;
+    var marker = L.marker([coords[1], coords[0]]).addTo(map);
+}    </code></pre>
+<p>Nous allons également garder en mémoire le marqueur pour chaque hôtel, pour pouvoir l'utiliser plus tard. Il suffit d'ajour une ligne dans la boucle ci-dessus pour sauvegarder le marqueur à l'intérieur de la variable <code>hotels</code>:</p>
+<pre><code>hotels.features[i].marker = marker;</code></pre>
+<p>Maintenant, on aimerait mettre en évidence le marqueur de l'hôtel de la liste sur lequel se trouve le curseur. Pour ce faire, nous allons remplacer simplement l'icône du marqueur. Ceci peut se faire à l'intérieur de la fonction <code>showHotelsDetails</code>. Tout d'abord, nous créons une nouvelle icône de marqueur, p.ex.</p>
+<pre><code>var redHotelIcon = L.icon({
+    iconUrl: &#39;https://github.com/christiankaiser/map-marker-icons/raw/master/icons/plain-red-hotel.png&#39;,
+    iconSize: [32, 41],
+    iconAnchor:   [16, 40],
+    popupAnchor:  [0, -40]
+});</code></pre>
+<p>... et puis pour remplacer l'icône d'un hôtel:</p>
+<pre><code>hotel.marker.setIcon(redHotelIcon);</code></pre>
+<p>Evidemment, il faut aussi remettre l'icône normale pour les autres marqueurs, sinon, ils gardent l'icône de remplacement pour toujours. Pour remettre l'icône par défaut, on peut écrire:</p>
+<pre><code>hotel.marker.setIcon(new L.Icon.Default());</code></pre>
+<p>Si on met ensemble les pièces du puzzle, la boucle à travers l'ensemble des hôtels dans la fonction <code>showHotelsDetails</code> peut être écrite comme suit:</p>
+<pre><code>...
+
+// marker pour l&#39;hôtel sélectionné
+var redHotelIcon = L.icon({
+    iconUrl: &#39;https://github.com/christiankaiser/map-marker-icons/raw/master/icons/plain-red-hotel.png&#39;,
+    iconSize: [32, 41],
+    iconAnchor:   [16, 40],
+    popupAnchor:  [0, -40]
+});
+
+// chercher l&#39;hôtel dans la liste
+var hotel = null;
+for (var i=0; i &lt; hotels.features.length; i++){
+    if (hotels.features[i].properties.id == hotelId){
+        hotel = hotels.features[i].properties;
+        hotels.features[i].marker.setIcon(redHotelIcon);
+    } else {
+        hotels.features[i].marker.setIcon(new L.Icon.Default());
+    }
+}
+
+...</code></pre>
+<p>Naturellement, nous aimerions aussi que les détails de l'hôtel soit affichés également si on passe avec la souris sur un des marqueurs. Pour cela, il faut attacher un événement au marqueur, au moment où on insère le marqueur sur la carte:</p>
+<pre><code>marker.on(&#39;mouseover&#39;, showHotelsDetailsMarker);</code></pre>
+<p>La fonction <code>showHotelsDetailsMarker</code> est similaire à la fonction <code>showHotelsDetails</code>, mais pas identique. La façon de trouver de quel hôtel il s'agit est très différente. En fait, le «target» de l'événement est le marqueur et non un <code>div</code> ou un autre élément HTML. Du coup, la recherche de l'hôtel dans la liste se fait un peu différemment:</p>
+<pre><code>function showHotelsDetailsMarker(evt){
+    // trouver l&#39;id de l&#39;hôtel
+    var m = evt.target;
+    var hotelId = null;
+    for (var i=0; i &lt; hotels.features.length; i++){
+        if (m == hotels.features[i].marker){
+            hotelId = hotels.features[i].properties.id;
+        }
+    }
+    
+    // la suite ici ...
+}</code></pre>
+<p>A partir de cet endroit, les deux fonctions sont strictement identiques. Une des règles d'or dans la programmation dit qu'il ne faut pas écrire deux fois le même code, car sinon il faut corriger une erreur potentielle deux fois ou plus. Nous pouvons facilement restructurer un peu notre code pour sortir la partie commune de la fonction <code>showHotelsDetails</code> dans une fonction à part, et appeler cette nouvelle fonction depuis les deux fonctions <code>showHotelsDetails</code> et <code>showHotelsDetailsMarker</code>, ce qui peut donner quelque chose comme:</p>
+<pre><code>function highlightHotel(hotelId){
+    // marker pour l&#39;hôtel sélectionné
+    var redHotelIcon = L.icon({
+        iconUrl: &#39;https://github.com/christiankaiser/map-marker-icons/raw/master/icons/plain-red-hotel.png&#39;,
+        iconSize: [32, 41],
+        iconAnchor:   [16, 40],
+        popupAnchor:  [0, -40]
+    });
+
+    // chercher l&#39;hôtel dans la liste
+    var hotel = null;
+    for (var i=0; i &lt; hotels.features.length; i++){
+        if (hotels.features[i].properties.id == hotelId){
+            hotel = hotels.features[i].properties;
+            hotels.features[i].marker.setIcon(redHotelIcon);
+        } else {
+            hotels.features[i].marker.setIcon(new L.Icon.Default());
+        }
+    }
+
+    // afficher les détails
+    var h = &#39;&lt;div id=&quot;hotel-details-&#39;+hotel.id+&#39;&quot;&gt;&#39;;
+    h += &#39;&lt;h3&gt;&#39;+hotel.name+&#39;&lt;/h3&gt;&#39;;
+    h += &#39;&lt;p&gt;Catégorie: &#39;+hotel.categorie+&#39;&lt;/p&gt;&#39;;
+    h += &#39;&lt;p&gt;Région: &#39;+hotel.region+&#39;&lt;/p&gt;&#39;;
+    h += &#39;&lt;p&gt;Description:&lt;br&gt;&#39;+hotel.description+&#39;&lt;/p&gt;&#39;;
+    h += &#39;&lt;p&gt;Prix: &#39;+hotel.prix+&#39; CHF&#39;;
+    h += &#39;&lt;/div&gt;&#39;;
+    $(&#39;#details&#39;).html(h);
+}
+
+function showHotelsDetailsMarker(evt){
+    // trouver l&#39;id de l&#39;hôtel
+    var m = evt.target;
+    var hotelId = null;
+    for (var i=0; i &lt; hotels.features.length; i++){
+        if (m == hotels.features[i].marker){
+            hotelId = hotels.features[i].properties.id;
+        }
+    }
+    highlightHotel(hotelId);
+}
+
+function showHotelsDetails(evt){
+    // extraire l&#39;id de l&#39;hôtel
+    var divId = $(evt.target).attr(&#39;id&#39;);
+    if ($(evt.target).hasClass(&#39;hoteldiv&#39;) == false){
+        divId = $(evt.target).parents(&#39;.hoteldiv&#39;).attr(&#39;id&#39;);
+    }
+    var hotelId = divId.replace(&quot;hotel-div-&quot;, &quot;&quot;);
+    highlightHotel(hotelId);
+}</code></pre>
+<hr />
+<h2 id="zoom-sur-un-hôtel">8. Zoom sur un hôtel</h2>
+<p>Il peut être utile de proposer un bouton qui permet de faire un zoom sur l'hôtel sélectionné. Ce bouton pourrait être placé en bas des informations détaillées. Le placement du bouton peut se faire dans la fonction <code>highlightHotel</code>, au moment où on génère le code HTML avec les détails, p.ex.:</p>
+<pre><code>h += &#39;&lt;p&gt;&lt;button id=&quot;hotelZoom&quot; class=&quot;btn btn-default btn-xs&quot;&gt;Montrer sur la carte&lt;/button&gt;&lt;/p&gt;&#39;;</code></pre>
+<p>Par la suite, il faut encore placer un événement Javascript pour lancer une fonction qui permettrait d'effectuer le zoom sur l'hôtel. Ceci peut se faire à la fin de la même fonction:</p>
+<pre><code>$(&#39;#hotelZoom&#39;).on(&#39;click&#39;, hotelZoom);</code></pre>
+<p>où <code>hotelZoom</code> est la fonction à créer. Cette ligne de code doit intervenir après la ligne</p>
+<pre><code>$(&#39;#details&#39;).html(h);</code></pre>
+<p>car c'est seulement à ce moment où le bouton est inséré dans le DOM et qu'il est possible d'y lier un événement Javascript.</p>
+<p>Maintenant, on peut écrire la fonction <code>hotelZoom</code>. La première chose à faire est extraire l'id de l'hôtel. Ceci peut se faire en utilisant l'<code>id</code> du <code>div</code> entourant le bouton:</p>
+<pre><code>var hotelId = $(evt.target).parents(&#39;div&#39;).attr(&#39;id&#39;).replace(&#39;hotel-details-&#39;, &#39;&#39;);</code></pre>
+<p>Par la suite, il faut trouver les coordonnées géographiques de l'hôtel dans la variable <code>hotels</code>. Il faut encore une fois passer à travers toute la liste des hôtels:</p>
+<pre><code>var coords = null;
+for (var i=0; i &lt; hotels.features.length; i++){
+    if (hotels.features[i].properties.id == hotelId){
+        coords = hotels.features[i].geometry.coordinates;
+    }
+}</code></pre>
+<p>Maintenant, on peut centrer la carte sur l'hôtel:</p>
+<pre><code>map.panTo([coords[1], coords[0]]);</code></pre>
+<p>Il peut être désirable de faire un zoom si la carte montre une étendu trop grande. On peut par exemple décider de faire qu'il faut avoir au minimum un niveau de zoom de 10. Nous pouvons donc par exemple demander le niveau de zoom actuel, et s'il est inférieur à 10, nous le mettons sur 10. Ceci peut se faire comme ça:</p>
+<pre><code>var z = map.getZoom();
+if (z &lt; 10) {
+    z = 10;
+}
+map.setZoom(z);</code></pre>
+<p>Les 4 premières lignes de ce code peuvent être écrites comme ça:</p>
+<pre><code>var z = map.getZoom() &lt; 10 ? 10 : map.getZoom();</code></pre>
+<p>Il s'agit d'une condition <code>if (...) { ... } else { ... }</code> sur une ligne, avec le résultat qui est attribué à la variable <code>z</code>. La structure est: <code>condition ? valeur si vrai : valeur si faux;</code>. Donc, on pourrait lire la ligne ci-dessus comme *«si <code>map.getZoom() est plus petit que 10</code> donne la valeur de <code>10</code> et sinon la valeur de <code>map.getZoom()</code>». Choisissez la façon d'écrire que vous préférez.</p>
+<p>Il est aussi possible de combiner une instruction <code>map.setZoom</code> et <code>map.panTo</code>:</p>
+<pre><code>map.setView( [coord[1], coord[0]], z );</code></pre>
+<p>qui est l'instruction que nous retenons finalement dans la fonction <code>hotelZoom</code>:</p>
+<pre><code>function hotelZoom(evt){
+    var hotelId = $(evt.target).parents(&#39;div&#39;).attr(&#39;id&#39;).replace(&#39;hotel-details-&#39;, &#39;&#39;);
+
+    // chercher les coordonnées de l&#39;hôtel
+    var coords = null;
+    for (var i=0; i &lt; hotels.features.length; i++){
+        if (hotels.features[i].properties.id == hotelId){
+            coords = hotels.features[i].geometry.coordinates;
+        }
+    }
+
+    // Centrer la carte sur l&#39;hôtel, et augmenter le zoom si le niveau et inférieur à 10
+    var z = map.getZoom() &lt; 10 ? 10 : map.getZoom();
+    map.setView([coords[1], coords[0]], z);
+
+}</code></pre>
+<p>Le code complet de l'application jusqu'à ce point est disponible dans <a href="app-v4">app-v4</a>.</p>
+<hr />
+<h2 id="filtrer-les-hôtels">9. Filtrer les hôtels</h2>
+<p>Nous filtrons maintenant la liste des hôtels en fonction des critères sélectionnés dans les options à gauche. Le filtrage est déclenché avec un clic sur le bouton <em>«Chercher»</em> à travers l'appel de la fonction <code>filtrerHotels</code>.</p>
+<p>Le principe du filtrage est le suivant: au début nous affichons l'ensemble des hôtels. Puis nous traitons une option de filtrage après l'autre, et nous cachons simplement les hôtels dans la liste qui ne correspondent pas au critère. Ceci peut se faire simplement en ajoutant la classe CSS <code>hide</code> sur le <code>div</code> de l'hôtel, donc p.ex.:</p>
+<pre><code>$(&#39;#hotel-div-4&#39;).addClass(&#39;hide&#39;);</code></pre>
+<p>Nous ne devons donc pas enlever l'hôtel de la liste, mais seulement le cacher. En plus, si nous ajoutons deux fois la même classe, ce n'est pas grave, l'instruction est simplement ignorée. Du coup, pour ré-afficher l'hôtel, il suffit de faire:</p>
+<pre><code>$(&#39;#hotel-div-4&#39;).removeClass(&#39;hide&#39;);</code></pre>
+<p>Nous rendons également le marqueur correspondant transparent, ce qui peut se faire avec:</p>
+<pre><code>hotels.features[0].marker.setOpacity(0);</code></pre>
+<p>et pour le ré-afficher:</p>
+<pre><code>hotels.features[0].marker.setOpacity(1);</code></pre>
+<p>Concrètement, nous faisons une boucle à travers l'ensemble des hôtels dans la fonction <code>filtrerHotels</code>:</p>
+<pre><code>function filtrerHotels(){
+    var region = $(&#39;#region&#39;).val();
+    ...
+    
+    for (var i=0; i &lt; hotels.features.length; i++){
+        var h = hotels.features[i];
+        
+        // afficher d&#39;abord l&#39;entrée dans la liste et le marker
+        $(&#39;#hotel-div-&#39; + h.properties.id).removeClass(&#39;hide&#39;);
+        h.marker.setOpacity(1);
+        
+        // suite ici ...
+        
+    }
+}</code></pre>
+<p>Pour le filtre de la région, il suffit de vérifier si une région est sélectionnée, et le cas échéant si l'hôtel se trouve dans la région sélectionnée:</p>
+<pre><code>if (region != &#39;&#39; &amp;&amp; h.properties.region != region) {
+    $(&#39;#hotel-div-&#39; + h.properties.id).addClass(&#39;hide&#39;);
+    h.marker.setOpacity(0);
+}</code></pre>
+<p>La condition vérifie que la variable <code>region</code> n'est pas vide et le cas échéant que la région sélectionnée n'est pas identique à celle de l'hôtel. Si c'est le cas, nous cachons l'hôtel car il est en dehors de la région sélectionnée.</p>
+<p>Pour le prix minimum et maximum, le filtre se fait de manière similaire, c'est même un peu plus simple. Du coup, nous pouvons mettre les deux filtres dans la même condition:</p>
+<pre><code>if (h.properties.prix &lt; minprix || h.properties.prix &gt; maxprix) {
+    $(&#39;#hotel-div-&#39; + h.properties.id).addClass(&#39;hide&#39;);
+    h.marker.setOpacity(0);
+}</code></pre>
+<p>Et finalement pour les trois catégories ville, rural et montagne (seulement le code pour la catégorie ville est montrée, les deux autres étant idendiques):</p>
+<pre><code>if (cat_ville == false &amp;&amp; h.properties.categorie == &#39;Ville&#39;) {
+    $(&#39;#hotel-div-&#39; + h.properties.id).addClass(&#39;hide&#39;);
+    h.marker.setOpacity(0);
+}</code></pre>
+<p>Bien évidemment, les données des filtres doivent correspondre aux données des hôtels du fichier JSON. Sinon, le filtre arrête de fonctionner correctement. Si on teste le code ci-dessus, on peut constater que le filtre de la région ne fonctionne pas parce que les valeurs du menu déroulant contiennent &quot;VS&quot;, &quot;VD&quot; etc., tandis que le fichier JSON contient les noms complets. Nous ajustons donc le menu déroulant pour qu'il correspond aux valeurs du fichier JSON. Nous profitons aussi de cette occasion d'ajuster le contenu du menu.</p>
+<p>Le code final de la fonction <code>filtrerHotels</code> ainsi que le nouveau menu déroulant se trouvent dans <a href="app-v5">app-v5</a>.</p>
+<p>Ce code final contient également une petite dernière modification: <strong>un scroll pour la liste des hôtels</strong>, pour éviter que la page devienne trop longue. Nous limitons la hauteur de la liste des hôtels à 520 pixels (valeur arbitraire), et s'il n'y a pas assez de place, un scrollbar ou similaire est affichée. Le code correspondant dans le fichier <code>index.html</code> est:</p>
+<pre><code>&lt;div style=&quot;max-height: 520px; overflow: auto;&quot; class=&quot;col-sm-4&quot;&gt;
+    &lt;div id=&quot;hotels-liste&quot;&gt;
+        &lt;p&gt;Liste&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+<p>où nous avons deux <code>div</code> imbriqués. Dans le <code>div</code> extérieur, nous appliquons deux styles CSS, le premier concerne la hauteur maximale (<code>max-height: 520px;</code>) et le deuxième l'affichage automatique du scrollbar (<code>overflow: auto;</code>).</p>
+<p>La première version de notre application choc sur les hôtels est désormais terminée. Nous pouvons donc procéder aux tests utilisateurs pour trouver les problèmes d'utilisation (bien entendu, il y en a...).</p>
