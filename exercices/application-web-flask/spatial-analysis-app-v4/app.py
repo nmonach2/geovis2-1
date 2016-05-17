@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import flask
-
+from random import choice
 
 import sklearn.decomposition    # importer scikit-learn package pour l'ACP
 import sklearn.cluster          # importer le module pour le clustering (k-means)
@@ -8,6 +8,13 @@ import sklearn.cluster          # importer le module pour le clustering (k-means
 
 app = flask.Flask(__name__)
 app.debug = True
+
+@app.route('/')
+def index():
+    return flask.render_template(
+        'index.html', 
+        random=choice(range(1,46))
+    )
 
 
 def lire_fichier_donnees():
@@ -38,12 +45,6 @@ def data():
     return flask.jsonify(cantons=cantons)
 
 
-@app.route('/pop')
-def pop():
-    donnees, pop = lire_fichier_donnees()
-    return flask.jsonify(population=pop)
-
-
 @app.route('/acp')
 def acp():
     cantons, pop = lire_fichier_donnees()
@@ -62,12 +63,7 @@ def acp():
     })
 
 
-@app.route('/clusters')
-def clusters_default():
-    return clusters(6)  # par défaut, nous faisons 6 groupes
-
-
-@app.route('/clusters/<n_clusters>')
+@app.route('/clusters/<int:n_clusters>')
 def clusters(n_clusters):
     cantons, pop = lire_fichier_donnees()
     d = cantons.values()
@@ -78,11 +74,6 @@ def clusters(n_clusters):
     for i in range(len(abbr)):
         res[abbr[i]] = clusters_result[i].tolist() + 1
     return flask.jsonify(clusters=res)
-
-
-@app.route('/')
-def index():
-    return flask.render_template('index.html')
 
 
 if __name__ == '__main__':
