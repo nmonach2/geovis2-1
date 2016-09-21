@@ -1,0 +1,12 @@
+{
+  "data": [
+    {"canton": "VD", "value": 508},
+    {"canton": "VS", "value": 970},
+    {"canton": "GE", "value": 978},
+    {"canton": "NE", "value": 847},
+    {"canton": "FR", "value": 370},
+    {"canton": "JU", "value": 222}
+  ],
+  "source": "numpy.random.randint(0, 1000, 6)"
+}
+

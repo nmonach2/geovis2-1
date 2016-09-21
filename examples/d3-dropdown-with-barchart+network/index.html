@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <!-- Load d3 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
+  <!-- We use Bootstrap for the layout: getbootstrap.com -->
+  <!-- We also need jQuery for Bootstrap -->
+  <script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <!-- Load sigma library for graph drawing (we use a Gephi GEXF file as data source) -->
+  <script src="lib/sigma-v1.1.0/sigma.min.js"></script>
+  <script src="lib/sigma-v1.1.0/plugins/sigma.parsers.gexf.min.js"></script>
+  <script src="lib/sigma-v1.1.0/plugins/sigma.plugins.neighborhoods.min.js"></script>
+
+  <!-- Load our own script and CSS -->
+  <link rel="stylesheet" href="main.css">
+  <script src="main.js" charset="utf-8"></script>
+</head>
+<body>
+
+  <!-- Empty structure of our document -->
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-4">
+        <div id="dropdown-domains"></div>
+        <div id="dropdown-themes"></div>
+        <div id="infobox"></div>
+      </div>
+      <div class="col-xs-8">
+        <div id="chart-view">
+          <!-- Our chart will go inside this SVG tag: -->
+          <svg width="500" height="200"></svg>
+        </div>
+        <div id="network-view" style="height: 400px; width: 500px; border: 1px solid #ddd;"></div>
+        <p class="infotext">Plus d'informations sur la libraire de dessin du réseau: <a href="http://sigmajs.org/">sigmajs.org</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Execute our own script -->
+  <script>
+    APP.main();
+  </script>
+
+</body>
+</html>
