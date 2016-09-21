@@ -67,7 +67,7 @@ def clusters_default():
     return clusters(6)  # par défaut, nous faisons 6 groupes
 
 
-@app.route('/clusters/<n_clusters>')
+@app.route('/clusters/<int:n_clusters>')
 def clusters(n_clusters):
     cantons, pop = lire_fichier_donnees()
     d = cantons.values()
