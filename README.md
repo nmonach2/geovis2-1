@@ -74,7 +74,7 @@ Il est possible de télécharger les documents individuellement ou tout en bloc 
 | Cours | Date      | Heure  | Contenu                                  | Salle |
 | ----- | --------- | ------ | ---------------------------------------- | ----- |
 | 12    | Je 11.10. | 15-17h | Applications Géovis mobiles              | TBD   |
-| 13    | Je 18.10. | 15-17h | Machine learning et géovisualisation     | TBD   |
+| 13    | Je 18.10. | 15-17h | Calcul et visualisation d'itinéraires    | TBD   |
 
 
 
