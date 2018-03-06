@@ -54,8 +54,8 @@ Il est possible de télécharger les documents individuellement ou tout en bloc 
 | Cours | Date  | Contenu                                  | Salle |
 | ----- | ----- | ---------------------------------------- | ----- |
 | 1     | 20.2. | Introduction au cours. Discussion des attentes au cours. Processus de mise en place d'un projet de géovisualisation. | GEO 3899 |
-| 2     | 27.2. | Base de données spatiales: PostGIS (1/2) |
-| 3     | 6.3.  | Base de données spatiales: PostGIS (2/2) |
+| 2     | 27.2. | Base de données spatiales: PostGIS (1/2) | GEO 3899 |
+| 3     | 6.3.  | Base de données spatiales: PostGIS (2/2) | GEO 3899 |
 | 4     | 13.3. | Introduction à Git                       |
 |       | 20.3. | Pas de cours                             |
 |       | 27.3. | Pas de cours                             |
