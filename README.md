@@ -54,27 +54,29 @@ Il est possible de télécharger les documents individuellement ou tout en bloc 
 | Cours | Date  | Contenu                                  | Salle |
 | ----- | ----- | ---------------------------------------- | ----- |
 | 1     | 20.2. | Introduction au cours. Discussion des attentes au cours. Processus de mise en place d'un projet de géovisualisation. | GEO 3899 |
-| 2     | 27.2. | Base de données spatiales: PostGIS (1/2) | GEO 3899 |
-| 3     | 6.3.  | Base de données spatiales: PostGIS (2/2) | GEO 3899 |
-| 4     | 13.3. | Introduction à Git                       |
+| 2     | 27.2. | Cours annulé                             | 
+| 3     | 6.3.  | Base de données spatiales: PostGIS (1/2) | GEO 3899 |
+| 4     | 13.3. | Base de données spatiales: PostGIS (2/2) | GEO 3899 |
 |       | 20.3. | Pas de cours                             |
 |       | 27.3. | Pas de cours                             |
 |       | 3.4.  | Vacances de Pâques                       |
-| 5     | 10.4. | Application Géovis dynamique             |
-| 6     | 17.4. | Introduction au SVG                      |
-| 7     | 24.4. | Visualisation interactive avec d3 (1/3)  |
-| 8     | 1.5.  | Visualisation interactive avec d3 (2/3)  |
-| 9     | 8.5.  | Visualisation interactive avec d3 (3/3)  |
-| 10    | 15.5. | Prototype du projet Géovis               |
-| 11    | 22.5. | Analyse exploratoire de données spatiales |
+| 5     | 10.4. | Introduction à Git                       | GEO 3899 |
+| 6     | 17.4. | Application Géovis dynamique             | GEO 3899 |
+| 7     | 24.4. | Introduction au SVG                      |
+| 8     | 1.5.  | Visualisation interactive avec d3 (1/3)  |
+| 9     | 8.5.  | Visualisation interactive avec d3 (2/3)  |
+| 10    | 15.5. | Visualisation interactive avec d3 (3/3)  |
+| 11    | 22.5. | Prototype du projet Géovis               |
 
 
 **Semestre d'automne 2018** *(provisoire)*
 
-| Cours | Date      | Heure  | Contenu                                  | Salle |
-| ----- | --------- | ------ | ---------------------------------------- | ----- |
-| 12    | Je 11.10. | 15-17h | Applications Géovis mobiles              | TBD   |
-| 13    | Je 18.10. | 15-17h | Calcul et visualisation d'itinéraires    | TBD   |
+| Cours | Date      | Heure  | Contenu                                   | Salle |
+| ----- | --------- | ------ | ----------------------------------------- | ----- |
+
+|  2    | TBD       | 15-17h | Analyse exploratoire de données spatiales | TBD   |
+| 12    | Je 11.10. | 15-17h | Applications Géovis mobiles               | TBD   |
+| 13    | Je 18.10. | 15-17h | Calcul et visualisation d'itinéraires     | TBD   |
 
 
 
