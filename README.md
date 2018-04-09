@@ -62,8 +62,8 @@ Il est possible de télécharger les documents individuellement ou tout en bloc 
 |       | 3.4.  | Vacances de Pâques                       |
 | 5     | 10.4. | Introduction à Git                       | GEO 3899 |
 | 6     | 17.4. | Application Géovis dynamique             | GEO 3899 |
-| 7     | 24.4. | Introduction au SVG                      |
-| 8     | 1.5.  | Visualisation interactive avec d3 (1/3)  |
+| 7     | 24.4. | Introduction au SVG                      | GEO 4899 |
+| 8     | 1.5.  | Visualisation interactive avec d3 (1/3)  | GEO 3899 |
 | 9     | 8.5.  | Visualisation interactive avec d3 (2/3)  |
 | 10    | 15.5. | Visualisation interactive avec d3 (3/3)  |
 | 11    | 22.5. | Prototype du projet Géovis               |
@@ -73,7 +73,6 @@ Il est possible de télécharger les documents individuellement ou tout en bloc 
 
 | Cours | Date      | Heure  | Contenu                                   | Salle |
 | ----- | --------- | ------ | ----------------------------------------- | ----- |
-
 |  2    | TBD       | 15-17h | Analyse exploratoire de données spatiales | TBD   |
 | 12    | Je 11.10. | 15-17h | Applications Géovis mobiles               | TBD   |
 | 13    | Je 18.10. | 15-17h | Calcul et visualisation d'itinéraires     | TBD   |
