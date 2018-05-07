@@ -64,9 +64,9 @@ Il est possible de télécharger les documents individuellement ou tout en bloc 
 | 6     | 17.4. | Application Géovis dynamique             | GEO 3899 |
 | 7     | 24.4. | Introduction au SVG                      | GEO 4899 |
 | 8     | 1.5.  | Visualisation interactive avec d3 (1/3)  | GEO 3899 |
-| 9     | 8.5.  | Visualisation interactive avec d3 (2/3)  |
-| 10    | 15.5. | Visualisation interactive avec d3 (3/3)  |
-| 11    | 22.5. | Prototype du projet Géovis               |
+| 9     | 8.5.  | Visualisation interactive avec d3 (2/3)  | GEO 3899 |
+| 10    | 15.5. | Visualisation interactive avec d3 (3/3)  | GEO 4899 |
+| 11    | 22.5. | Prototype du projet Géovis               | GEO 4899 |
 
 
 **Semestre d'automne 2018** *(provisoire)*
